@@ -8,11 +8,11 @@
 
 #import "JJSegmentBar.h"
 
-#define HT_SegmentBar_ScrollviewH 44.0
-#define HT_SegmentBar_BottomH 3.0
-#define HT_SegmentBar_Edge 5
-#define HT_SegmentBar_BtnCount 5
-#define HT_SegmentBar_Padding 20
+#define JJ_SegmentBar_ScrollviewH 44.0
+#define JJ_SegmentBar_BottomH 3.0
+#define JJ_SegmentBar_Edge 5
+#define JJ_SegmentBar_BtnCount 5
+#define JJ_SegmentBar_Padding 20
 
 typedef void(^SelectedBlock) (JJSegmentBtn *button);
 
@@ -120,7 +120,7 @@ static CGFloat viewHeight;
             
             [button.titleLabel sizeToFit];
             
-            allWidth = button.titleLabel.frame.size.width + HT_SegmentBar_Padding * 2 + allWidth;
+            allWidth = button.titleLabel.frame.size.width + JJ_SegmentBar_Padding * 2 + allWidth;
         }
         
         //当所有按钮宽度总和小于屏幕宽度时，按钮还是等宽
@@ -143,7 +143,7 @@ static CGFloat viewHeight;
  */
 - (CGFloat)setupSegmentBtnSameWidth
 {
-    NSInteger number = self.titles.count < HT_SegmentBar_BtnCount ? self.titles.count : HT_SegmentBar_BtnCount;
+    NSInteger number = self.titles.count < JJ_SegmentBar_BtnCount ? self.titles.count : JJ_SegmentBar_BtnCount;
     
     CGFloat width = CGRectGetWidth(self.frame) / number;
     CGFloat height = viewHeight;
@@ -188,17 +188,17 @@ static CGFloat viewHeight;
         [previousBtn.titleLabel sizeToFit];
         
         //前一个按钮的宽度
-        CGFloat previousWidth = i == 0 ? 0 : previousBtn.titleLabel.frame.size.width + HT_SegmentBar_Padding * 2;
+        CGFloat previousWidth = i == 0 ? 0 : previousBtn.titleLabel.frame.size.width + JJ_SegmentBar_Padding * 2;
         
         //总宽度
         width = previousWidth + width;
         
-        button.frame = CGRectMake(width, 0, button.titleLabel.frame.size.width + HT_SegmentBar_Padding * 2, height);
+        button.frame = CGRectMake(width, 0, button.titleLabel.frame.size.width + JJ_SegmentBar_Padding * 2, height);
         
         [self.scrollview addSubview:button];
         
         if (i == self.buttonsArray.count - 1) {
-            width = button.titleLabel.frame.size.width + HT_SegmentBar_Padding * 2 + width;
+            width = button.titleLabel.frame.size.width + JJ_SegmentBar_Padding * 2 + width;
         }
     }
     
@@ -220,9 +220,9 @@ static CGFloat viewHeight;
 - (void)addIndicatorViewWithWidth:(CGFloat)width
 {
     if (self.indicatorView) return;
-    self.indicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, viewHeight - HT_SegmentBar_BottomH, width - HT_SegmentBar_Edge * 2, HT_SegmentBar_BottomH)];
+    self.indicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, viewHeight - JJ_SegmentBar_BottomH, width - JJ_SegmentBar_Edge * 2, JJ_SegmentBar_BottomH)];
     self.indicatorView.backgroundColor = self.selectColor;
-    self.indicatorView.center = CGPointMake(width / 2, viewHeight - HT_SegmentBar_BottomH / 2);
+    self.indicatorView.center = CGPointMake(width / 2, viewHeight - JJ_SegmentBar_BottomH / 2);
     [self.scrollview addSubview:_indicatorView];
 }
 
@@ -247,7 +247,7 @@ static CGFloat viewHeight;
         
         [button.titleLabel sizeToFit];
         
-        CGFloat currentBtnWidth = button.frame.size.width - HT_SegmentBar_Edge * 2;
+        CGFloat currentBtnWidth = button.frame.size.width - JJ_SegmentBar_Edge * 2;
         
         
         CGFloat btnTitleWidth = button.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth: button.titleLabel.frame.size.width;
@@ -255,8 +255,8 @@ static CGFloat viewHeight;
         
         [UIView animateWithDuration:0.3 animations:^{
             
-            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, HT_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(button.center.x , viewHeight - HT_SegmentBar_BottomH / 2);
+            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, JJ_SegmentBar_BottomH);
+            self.indicatorView.center = CGPointMake(button.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
         }];
     }
     
@@ -358,12 +358,12 @@ static CGFloat viewHeight;
             
             [currentBtn.titleLabel sizeToFit];
             
-            CGFloat currentBtnWidth = currentBtn.frame.size.width - HT_SegmentBar_Edge * 2;
+            CGFloat currentBtnWidth = currentBtn.frame.size.width - JJ_SegmentBar_Edge * 2;
             
             CGFloat btnTitleWidth = currentBtn.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth : currentBtn.titleLabel.frame.size.width;
             
-            self.indicatorView.frame = CGRectMake(0, 0, btnTitleWidth, HT_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - HT_SegmentBar_BottomH / 2);
+            self.indicatorView.frame = CGRectMake(0, 0, btnTitleWidth, JJ_SegmentBar_BottomH);
+            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
         }
     }
 }
@@ -386,13 +386,13 @@ static CGFloat viewHeight;
             
             [currentBtn.titleLabel sizeToFit];
             
-            CGFloat currentBtnWidth = currentBtn.frame.size.width - HT_SegmentBar_Edge * 2;
+            CGFloat currentBtnWidth = currentBtn.frame.size.width - JJ_SegmentBar_Edge * 2;
             
             CGFloat btnTitleWidth = currentBtn.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth: currentBtn.titleLabel.frame.size.width;
             CGFloat indicatorWidth = self.indicatorType == JJIndicatorSameWidthType ? currentBtnWidth : btnTitleWidth;
             
-            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, HT_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - HT_SegmentBar_BottomH / 2);
+            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, JJ_SegmentBar_BottomH);
+            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
         }
     }
     
