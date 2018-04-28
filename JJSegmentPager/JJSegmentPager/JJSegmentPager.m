@@ -29,7 +29,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *segmentBarView;
 @property (nonatomic, strong) UIScrollView *rootScrollView;
-@property (nonatomic, strong) NSMutableArray *indexArray;
 @property (nonatomic, strong) NSHashTable *hasShownControllers;
 @property (nonatomic, assign) CGFloat segmentTopInset;
 @property (nonatomic, assign) CGFloat originalTopInset;
@@ -40,23 +39,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 @end
 
 @implementation JJSegmentPager
-
-- (NSMutableArray *)indexArray
-{
-    if (!_indexArray) {
-        _indexArray = [NSMutableArray array];
-    }
-    return _indexArray;
-}
-
-- (UIView *)segmentBarView
-{
-    if (!_segmentBarView) {
-        _segmentBarView = [[UIView alloc] init];
-        _segmentBarView.backgroundColor = [UIColor whiteColor];
-    }
-    return _segmentBarView;
-}
 
 - (instancetype)init
 {
@@ -121,7 +103,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
     [self setupSegmentView];
     
-    [self setupCurrentController];
+    [self updateCurrentControllerWithIndex:self.currentPage];
 }
 
 /**
@@ -171,36 +153,18 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
  */
 - (void)setupSegmentView
 {
-    self.segmentBarView.frame = CGRectMake(0, self.headerHeight, self.view.frame.size.width, self.segmentHeight);
-    
-    //设置阴影
-    if (self.needShadow) {
-        self.segmentBarView.layer.shadowOffset = CGSizeMake(0, 0);
-        self.segmentBarView.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor;
-        self.segmentBarView.layer.shadowOpacity = 0.5;
-    }
+    self.segmentBarView = [[UIView alloc] initWithFrame:CGRectMake(0, self.headerHeight, self.view.frame.size.width, self.segmentHeight)];
+    self.segmentBarView.backgroundColor = [UIColor whiteColor];
     
     [self.rootScrollView addSubview:_segmentBarView];
     [self.segmentBarView addSubview:[self defaultBarView]];
-}
-
-
-/**
- Description 添加第一个控制器
- */
-- (void)setupCurrentController
-{
-    UIViewController<JJSegmentDelegate> *controller = self.subControllers[_currentPage];
-    //      [controller willMoveToParentViewController:self];
-
-    //      [controller didMoveToParentViewController:self];
     
-    [self layoutControllerWithController:controller];
-    [self addObserverForPageController:controller];
+    //设置阴影
+    if (!self.needShadow) return;
     
-    self.currentDisplayController = self.subControllers[_currentPage];
-    
-    [self.indexArray addObject:[NSString stringWithFormat:@"%ld", (long)self.currentPage]];
+    self.segmentBarView.layer.shadowOffset = CGSizeMake(0, 0);
+    self.segmentBarView.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor;
+    self.segmentBarView.layer.shadowOpacity = 0.5;
 }
 
 /**
@@ -299,10 +263,15 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 {
     UIView *pageView = pageController.view;
     
+    //如果已经存在，就不再添加
+    if ([pageView isDescendantOfView:self.groundScrollView]) return;
+    
     [self.groundScrollView insertSubview:pageView atIndex:0];
     [self addChildViewController:pageController];
     
-    //    NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
+    NSLog(@"添加了：%@", pageController.title);
+    
+//    NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
     
     pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - self.navTabBarHeight);
     
@@ -320,19 +289,19 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         
         scrollView.alwaysBounceVertical = YES;
         self.originalTopInset = self.headerHeight + self.segmentHeight;
-        
-        
+
+
         CGFloat bottomInset = 0;
         if (self.tabBarController.tabBar.hidden == NO) {
             bottomInset = CGRectGetHeight(self.tabBarController.tabBar.bounds);
         }
-        
+
         [scrollView setContentInset:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
         [scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
-        
+
         if (![self.hasShownControllers containsObject:pageController]) {
             [self.hasShownControllers addObject:pageController];
-            
+
             [scrollView setContentOffset:CGPointMake(0, -self.headerHeight - self.segmentHeight)];
         }
         
@@ -360,7 +329,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 }
 
 #pragma mark - add / remove obsever for page scrollView
-
 - (void)addObserverForPageController:(UIViewController<JJSegmentDelegate> *)controller
 {
     UIScrollView *scrollView = [self scrollViewInPageController:controller];
@@ -538,47 +506,32 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
  */
 - (void)updateCurrentControllerWithIndex:(NSInteger)index
 {
-    
+    //移除
     [self removeObseverForPageController:self.currentDisplayController];
     
+    UIViewController<JJSegmentDelegate> *controller = self.subControllers[index];
+    
     self.currentPage = index;
-    
-    UIViewController<JJSegmentDelegate> *controller =
-    self.subControllers[index];
-    
-    BOOL isHave = NO;
-    
-    for (NSString *currentIndex in self.indexArray) {
-        
-        if ([currentIndex integerValue] == index) {
-            
-            isHave = YES;
-        }
-    }
-    
-    if (isHave == NO) {
-        
-        [self layoutControllerWithController:controller];
-        [self.indexArray addObject:[NSString stringWithFormat:@"%ld", (long)index]];
-    }
-    
     self.currentDisplayController = controller;
     
-    [self.view setNeedsLayout];
-    [self.view layoutIfNeeded];
+    //添加当前控制器
+    [self layoutControllerWithController:controller];
     
-    
+
     UIScrollView *scrollView = [self scrollViewInPageController:controller];
-    
+
+    //更新当前scrollView偏移量
     if (self.segmentTopInset != self.headerHeight) {
-        
+
         if (scrollView.contentOffset.y >= -(self.segmentHeight + self.headerHeight) && scrollView.contentOffset.y <= -self.segmentHeight) {
             [scrollView setContentOffset:CGPointMake( 0, -self.segmentHeight - self.segmentTopInset) animated:NO];
         }
     }
+
+    //添加
+    [self addObserverForPageController:controller];
+    [scrollView setContentOffset:scrollView.contentOffset animated:YES];
     
-    [self addObserverForPageController:self.currentDisplayController];
-    [scrollView setContentOffset:scrollView.contentOffset animated:NO];
 }
 
 #pragma mark - public methods
@@ -640,7 +593,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 
 - (void)dealloc
 {
-    NSLog(@"销毁了");
+    NSLog(@"控制器销毁了");
     [self removeObseverForPageController:self.currentDisplayController];
 }
 
