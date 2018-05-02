@@ -144,6 +144,7 @@
     
 ```	
 * 1.需要实现scrollViewDidEndDecelerating代理回调 更改自定义标签按钮索引
+
 ```objc
     //需要实现scrollViewDidEndDecelerating代理回调 更改自定义标签按钮索引
     [pager scrollViewDidEndDeceleratingBlock:^(NSInteger currentPage) {
