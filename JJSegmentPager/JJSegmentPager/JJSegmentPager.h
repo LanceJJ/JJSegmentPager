@@ -119,9 +119,19 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 @property (nonatomic, assign) CGFloat headerHeight;
 
 /**
+ Description 表尾高度（默认0）
+ */
+@property (nonatomic, assign) CGFloat footerHeight;
+
+/**
  Description 自定义表头
  */
 @property (nonatomic, strong) UIView *customHeaderView;
+
+/**
+ Description 自定义表尾
+ */
+@property (nonatomic, strong) UIView *customFooterView;
 
 /**
  Description 自定义标签按钮

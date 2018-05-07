@@ -11,6 +11,8 @@
 #import "JJSegmentHeader.h"
 #import "JJSegmentScrollView.h"
 
+#define JJ_SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
+
 
 typedef void(^UpdateSegmentTopInsetBlock)(CGFloat top);
 typedef void(^SelectSegmentBarBlock)(NSInteger index);
@@ -28,6 +30,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 @property (nonatomic, strong) JJSegmentScrollView *groundScrollView;//继承自定义ScrollView 防止控制器侧滑返回与ScrollView左右滑动产生冲突
 @property (nonatomic, strong) UIView *headerView;
 @property (nonatomic, strong) UIView *segmentBarView;
+@property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UIScrollView *rootScrollView;
 @property (nonatomic, strong) NSHashTable *hasShownControllers;
 @property (nonatomic, assign) CGFloat segmentTopInset;
@@ -78,6 +81,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     self.enableScrollViewDrag = NO;
     self.currentPage = 0;
     self.headerHeight = 0;
+    self.footerHeight = 0;
     self.segmentHeight = 44;
     self.barContentInset = UIEdgeInsetsZero;
     self.segmentTopInset = 0;
@@ -102,6 +106,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     [self setupHeaderView];
     
     [self setupSegmentView];
+    
+    [self setupFooterView];
     
     [self updateCurrentControllerWithIndex:self.currentPage];
 }
@@ -149,6 +155,17 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 }
 
 /**
+ Description 初始化表尾
+ */
+- (void)setupFooterView
+{
+    self.footerView = [self defaultFooterView];
+    self.footerView.frame = CGRectMake(0, JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.footerHeight, self.view.frame.size.width, self.footerHeight);
+    self.footerView.clipsToBounds = YES;
+    [self.rootScrollView addSubview:_footerView];
+}
+
+/**
  Description 初始化按钮
  */
 - (void)setupSegmentView
@@ -180,6 +197,18 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 }
 
 /**
+ Description 默认表尾
+ 
+ @return UIView
+ */
+- (UIView *)defaultFooterView
+{
+    if (self.customFooterView) return self.customFooterView;
+    
+    return [[UIView alloc] initWithFrame:CGRectMake(0, JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.footerHeight, self.view.frame.size.width, self.footerHeight)];
+}
+
+/**
  Description 默认标签按钮
  
  @return JJSegmentBar
@@ -194,6 +223,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
     return [self setupSegmentBar];
 }
+
 
 /**
  Description 初始化JJSegmentBar
@@ -273,7 +303,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
 //    NSLog(@"%f", [UIScreen mainScreen].bounds.size.height);
     
-    pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - self.navTabBarHeight);
+    pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - self.navTabBarHeight - self.footerHeight);
     
     UIScrollView *scrollView = [self scrollViewInPageController:pageController];
     
@@ -285,7 +315,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
     if (scrollView) {
         
-        scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - self.navTabBarHeight);
+        scrollView.frame = CGRectMake(0, 0, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - self.navTabBarHeight - self.footerHeight);
         
         scrollView.alwaysBounceVertical = YES;
         self.originalTopInset = self.headerHeight + self.segmentHeight;
@@ -307,7 +337,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         
     } else {
         
-        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, self.view.frame.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight);
+        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, self.view.frame.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight - self.footerHeight);
     }
 }
 
@@ -364,7 +394,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     UIScrollView *scrollView = object;
   
     CGFloat contentH = scrollView.contentSize.height;
-    CGFloat screenH = self.view.frame.size.height + self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight;
+    CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
     
     if (contentH < screenH && self.enableContentSizeChanged && self.enableOffsetChanged) {
         

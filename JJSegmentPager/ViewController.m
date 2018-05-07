@@ -11,6 +11,7 @@
 #import "JJDefaultHeaderViewController.h"
 #import "JJCustomHeaderViewController.h"
 #import "JJCustomBarViewController.h"
+#import "JJCustomFooterViewController.h"
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -31,8 +32,10 @@
     self.viewControllers = @[NSStringFromClass([JJBaseUsedViewController class]),
                              NSStringFromClass([JJDefaultHeaderViewController class]),
                              NSStringFromClass([JJCustomHeaderViewController class]),
-                             NSStringFromClass([JJCustomBarViewController class])];
-    self.titleArray = @[@"最基本用法", @"默认表头", @"自定义表头", @"自定义标签按钮"];
+                             NSStringFromClass([JJCustomBarViewController class]),
+                             NSStringFromClass([JJCustomFooterViewController class])
+                             ];
+    self.titleArray = @[@"最基本用法", @"默认表头", @"自定义表头", @"自定义标签按钮", @"自定义表尾"];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
     self.tableView.delegate = self;

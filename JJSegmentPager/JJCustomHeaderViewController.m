@@ -79,12 +79,12 @@
     //参数设置
     pager.subControllers = @[one, two, three];
     
-    pager.segmentMiniTopInset = kNavHeight;
-    pager.headerHeight = HEADER_HEIGHT;
-    pager.enableOffsetChanged = YES;
-    pager.enableMaxHeaderHeight = YES;
-    pager.enableContentSizeChanged = YES;
-    pager.enableScrollViewDrag = YES;
+    pager.segmentMiniTopInset = kNavHeight;//segmentBar顶端距离控制器的最小边距，也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端
+    pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
+    pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
+    pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
+    pager.enableContentSizeChanged = YES;//允许列表的数据源过小时,仍可向上滑动,来改变表头偏移量，默认不允许NO
+    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
     pager.needShadow = YES;//设置segmentBar阴影
     pager.customHeaderView = headerView;//自定义表头
     [pager addParentController:self];
