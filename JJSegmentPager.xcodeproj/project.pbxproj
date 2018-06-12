@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7E2C86FC209FF64100C24E3F /* JJCustomFooterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2C86FB209FF64100C24E3F /* JJCustomFooterViewController.m */; };
+		7E36208620CF9F20003A8B70 /* UITableView+JJRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E36208520CF9F20003A8B70 /* UITableView+JJRuntime.m */; };
 		7E5661EA2092C73900CA362F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5661E92092C73900CA362F /* AppDelegate.m */; };
 		7E5661ED2092C73900CA362F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5661EC2092C73900CA362F /* ViewController.m */; };
 		7E5661F02092C73900CA362F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5661EE2092C73900CA362F /* Main.storyboard */; };
@@ -56,6 +57,8 @@
 /* Begin PBXFileReference section */
 		7E2C86FA209FF64100C24E3F /* JJCustomFooterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJCustomFooterViewController.h; sourceTree = "<group>"; };
 		7E2C86FB209FF64100C24E3F /* JJCustomFooterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJCustomFooterViewController.m; sourceTree = "<group>"; };
+		7E36208420CF9F20003A8B70 /* UITableView+JJRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableView+JJRuntime.h"; sourceTree = "<group>"; };
+		7E36208520CF9F20003A8B70 /* UITableView+JJRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITableView+JJRuntime.m"; sourceTree = "<group>"; };
 		7E5661E52092C73800CA362F /* JJSegmentPager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JJSegmentPager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E5661E82092C73800CA362F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7E5661E92092C73900CA362F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -227,6 +230,8 @@
 				7E5662242092C83A00CA362F /* JJSegmentHeader.m */,
 				7E5662202092C80100CA362F /* JJSegmentScrollView.h */,
 				7E5662212092C80100CA362F /* JJSegmentScrollView.m */,
+				7E36208420CF9F20003A8B70 /* UITableView+JJRuntime.h */,
+				7E36208520CF9F20003A8B70 /* UITableView+JJRuntime.m */,
 			);
 			path = JJSegmentPager;
 			sourceTree = "<group>";
@@ -381,6 +386,7 @@
 				7E5661F82092C73900CA362F /* main.m in Sources */,
 				7E5662452092CEB100CA362F /* JJCustomHeader.m in Sources */,
 				7E5661EA2092C73900CA362F /* AppDelegate.m in Sources */,
+				7E36208620CF9F20003A8B70 /* UITableView+JJRuntime.m in Sources */,
 				7E5662282092C87600CA362F /* JJSegmentBtn.m in Sources */,
 				7E56622B2092C8F200CA362F /* JJSegmentBar.m in Sources */,
 				7E56623A2092CBDE00CA362F /* JJCustomBarViewController.m in Sources */,

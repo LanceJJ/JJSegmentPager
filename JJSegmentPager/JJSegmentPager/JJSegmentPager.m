@@ -10,6 +10,7 @@
 #import "JJSegmentBar.h"
 #import "JJSegmentHeader.h"
 #import "JJSegmentScrollView.h"
+#import "UITableView+JJRuntime.h"
 
 #define JJ_SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
@@ -36,8 +37,12 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 @property (nonatomic, assign) CGFloat segmentTopInset;
 @property (nonatomic, assign) CGFloat originalTopInset;
 @property (nonatomic, assign) CGFloat navTabBarHeight;
+@property (nonatomic, assign) CGFloat currentOffsetY;
+@property (nonatomic, assign) CGFloat tempContentH;
 @property (nonatomic, assign) BOOL ignoreOffsetChanged;
 
+@property (nonatomic, strong) NSLayoutConstraint *headerHeightCos;
+@property (nonatomic, strong) NSLayoutConstraint *headerTopCos;
 
 @end
 
@@ -149,9 +154,33 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 - (void)setupHeaderView
 {
     self.headerView = [self defaultHeaderView];
-    self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.headerHeight);
+//    self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.headerHeight);
+    self.headerView.userInteractionEnabled = NO;
     self.headerView.clipsToBounds = YES;
     [self.rootScrollView addSubview:_headerView];
+    
+    self.headerView.translatesAutoresizingMaskIntoConstraints = NO;
+    //高度约束
+    NSLayoutConstraint *headerHeightCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1.0 constant:self.headerHeight];
+
+    [self.headerView addConstraint:headerHeightCos];
+    self.headerHeightCos = headerHeightCos;
+    
+    //顶部约束
+    NSLayoutConstraint *headerTopCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0];
+    
+    [self.view addConstraint:headerTopCos];
+    self.headerTopCos = headerTopCos;
+    
+    //左边约束
+    NSLayoutConstraint *headerLeftCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0f constant:0.0f];
+
+    [self.view addConstraint:headerLeftCos];
+
+    //右边约束
+    NSLayoutConstraint *headerRightCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0f constant:0.0f];
+
+    [self.view addConstraint:headerRightCos];
 }
 
 /**
@@ -160,9 +189,30 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 - (void)setupFooterView
 {
     self.footerView = [self defaultFooterView];
-    self.footerView.frame = CGRectMake(0, JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.footerHeight, self.view.frame.size.width, self.footerHeight);
+//    self.footerView.frame = CGRectMake(0, JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.footerHeight, self.view.frame.size.width, self.footerHeight);
     self.footerView.clipsToBounds = YES;
     [self.rootScrollView addSubview:_footerView];
+    
+    self.footerView.translatesAutoresizingMaskIntoConstraints = NO;
+    //高度约束
+    NSLayoutConstraint *footerHeightCos = [NSLayoutConstraint constraintWithItem:self.footerView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1.0 constant:self.footerHeight];
+    
+    [self.footerView addConstraint:footerHeightCos];
+ 
+    //底部约束
+    NSLayoutConstraint *footerBottomCos = [NSLayoutConstraint constraintWithItem:self.footerView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
+    
+    [self.view addConstraint:footerBottomCos];
+    
+    //左边约束
+    NSLayoutConstraint *footerLeftCos = [NSLayoutConstraint constraintWithItem:self.footerView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0f constant:0.0f];
+    
+    [self.view addConstraint:footerLeftCos];
+    
+    //右边约束
+    NSLayoutConstraint *footerRightCos = [NSLayoutConstraint constraintWithItem:self.footerView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTrailing multiplier:1.0f constant:0.0f];
+    
+    [self.view addConstraint:footerRightCos];
 }
 
 /**
@@ -325,14 +375,48 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         if (self.tabBarController.tabBar.hidden == NO) {
             bottomInset = CGRectGetHeight(self.tabBarController.tabBar.bounds);
         }
+        
+        CGFloat contentH = scrollView.contentSize.height;
+        CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
+        
+        if (contentH < screenH && self.enableContentSizeChanged && self.enableOffsetChanged) {
+            
+            scrollView.contentSize = CGSizeMake(self.view.frame.size.width, screenH);
+        }
 
         [scrollView setContentInset:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
         [scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
+    
 
         if (![self.hasShownControllers containsObject:pageController]) {
             [self.hasShownControllers addObject:pageController];
 
-            [scrollView setContentOffset:CGPointMake(0, -self.headerHeight - self.segmentHeight)];
+            [scrollView setContentOffset:CGPointMake(0, -self.segmentTopInset - self.segmentHeight)];
+        }
+        
+        self.currentOffsetY = -self.segmentTopInset - self.segmentHeight;
+        
+        if ([scrollView isKindOfClass:[UITableView class]]) {
+
+            UITableView *tableView = (UITableView *)scrollView;
+            __weak typeof(tableView)  weakTableView = tableView;
+            __weak typeof(self) weakSelf = self;
+            tableView.didReloadData = ^{
+
+                CGFloat contentH = weakTableView.contentSize.height;
+
+                CGFloat screenH = JJ_SCREEN_HEIGHT - weakSelf.navTabBarHeight - weakSelf.segmentMiniTopInset - weakSelf.segmentHeight - weakSelf.footerHeight;
+
+                if (contentH < screenH && weakSelf.enableContentSizeChanged && weakSelf.enableOffsetChanged) {
+
+                    weakTableView.contentSize = CGSizeMake(weakSelf.view.frame.size.width, screenH);
+
+                }
+
+//                if (weakTableView.contentOffset.y != weakSelf.currentOffsetY) {
+//                    [scrollView setContentOffset:CGPointMake(0, weakSelf.currentOffsetY)];
+//                }
+            };
         }
         
     } else {
@@ -392,14 +476,16 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     if (self.segmentMiniTopInset > self.headerHeight) self.segmentMiniTopInset = self.headerHeight;
     
     UIScrollView *scrollView = object;
-  
+    
     CGFloat contentH = scrollView.contentSize.height;
     CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
     
-    if (contentH < screenH && self.enableContentSizeChanged && self.enableOffsetChanged) {
+    if (contentH < screenH && self.tempContentH == contentH && self.enableContentSizeChanged && self.enableOffsetChanged) {
         
         scrollView.contentSize = CGSizeMake(self.view.frame.size.width, screenH);
     }
+    
+    self.tempContentH = contentH;
     
     if (context == _JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET &&
         !_ignoreOffsetChanged) {
@@ -409,7 +495,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         CGFloat oldOffsetY = oldOffset.y;
         CGFloat deltaOfOffsetY = offset.y - oldOffsetY;
         CGFloat offsetYWithSegment = offset.y + self.segmentHeight;
-        
+
         if (deltaOfOffsetY > 0 &&
             offsetY >= -(self.headerHeight + self.segmentHeight)) {
             // 当滑动是向上滑动时且不是回弹
@@ -458,13 +544,21 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         }
         
 //        NSLog(@"------%f", self.segmentTopInset);
-//
-//        self.segmentBar.frame = CGRectMake(0, self.segmentTopInset, self.view.frame.size.width, self.segmentHeight);
         
-        self.segmentBarView.frame = CGRectMake(0, self.segmentTopInset, self.view.frame.size.width, self.segmentHeight);
-        
-        self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.segmentTopInset);
-        
+        if (self.segmentTopInset <= self.headerHeight || self.enableMaxHeaderHeight) {
+
+            self.segmentBarView.frame = CGRectMake(0, self.segmentTopInset, self.view.frame.size.width, self.segmentHeight);
+            
+            if (self.headerViewChangeType == JJHeaderViewSizeChangeType) {//改变尺寸
+
+                self.headerHeightCos.constant = self.segmentTopInset;
+                
+            } else if (self.headerViewChangeType == JJHeaderViewPositionChangeType) {//改变位置
+
+                self.headerTopCos.constant = self.segmentTopInset - self.headerHeight;
+            }
+        }
+    
     } else if (context == _JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET) {
         UIEdgeInsets insets = [object contentInset];
         if (fabs(insets.top - _originalTopInset) < 2) {
@@ -547,7 +641,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     //添加当前控制器
     [self layoutControllerWithController:controller];
     
-
     UIScrollView *scrollView = [self scrollViewInPageController:controller];
 
     //更新当前scrollView偏移量
@@ -557,7 +650,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
             [scrollView setContentOffset:CGPointMake( 0, -self.segmentHeight - self.segmentTopInset) animated:NO];
         }
     }
-
+    //保存当前scrollView偏移量
+    self.currentOffsetY = -(self.segmentTopInset + self.segmentHeight);
     //添加
     [self addObserverForPageController:controller];
     [scrollView setContentOffset:scrollView.contentOffset animated:YES];
@@ -576,7 +670,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     CGFloat navH = kNavHeight;
     
     self.navTabBarHeight = viewController.navigationController.navigationBar.translucent == YES ? 0 : navH;
-    self.navTabBarHeight = viewController.navigationController.navigationBar.hidden == YES ? 0 : self.navTabBarHeight;
+    self.navTabBarHeight = viewController.navigationController.navigationBar.hidden == YES || viewController.navigationController.navigationBarHidden == YES ? 0 : self.navTabBarHeight;
     
     viewController.automaticallyAdjustsScrollViewInsets = NO;
     [viewController.view addSubview:self.view];

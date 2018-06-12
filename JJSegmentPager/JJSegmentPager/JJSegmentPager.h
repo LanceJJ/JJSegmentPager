@@ -37,6 +37,18 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
     JJBarSegmentBtnAutoWidthType
 };
 
+/**
+ Description 表头随着偏移量改变的类型
+
+ - JJHeaderViewSizeChangeType: 随着偏移量，尺寸改变（position.x与position.y保持不变，size改变）（默认）
+ - JJHeaderViewPositionChangeType: 随着便宜量，位置改变（size.height与size.width保持不变，position改变）
+ */
+typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
+    
+    JJHeaderViewSizeChangeType,
+    JJHeaderViewPositionChangeType
+};
+
 
 @protocol JJSegmentDelegate <NSObject>
 
@@ -62,6 +74,11 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
  Description 标签按钮的宽度设置（默认等宽）
  */
 @property (nonatomic, assign) JJBarSegmentBtnWidthType barSegmentBtnWidthType;
+
+/**
+ Description 表头随着偏移量改变的类型（默认改变尺寸，位置不变）
+ */
+@property (nonatomic, assign) JJHeaderViewChangeType headerViewChangeType;
 
 /**
  Description 当前子控制器

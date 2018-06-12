@@ -47,6 +47,7 @@
 //    pager.footerHeight = 40;//表尾高度，默认0
 //    pager.barSegmentBtnWidthType = JJBarSegmentBtnAutoWidthType;//标签按钮宽度类型
 //    pager.barIndicatorType = JJBarIndicatorAutoWidthType;//标签按钮底部指示器宽度类型
+//    pager.headerViewChangeType = JJHeaderViewPositionChangeType;//表头随着偏移量改变的类型
 //    pager.segmentHeight = 44;//标签按钮高度，默认44
 //    pager.currentPage = 1;//当前标签按钮位置，默认0
 //    pager.barContentInset = UIEdgeInsetsMake(0, 30, 0, 30);//segmentBar的内边距，默认UIEdgeInsetsZero

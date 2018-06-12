@@ -25,6 +25,7 @@
         self.dataCount = 5;
     } else if ([self.title isEqualToString:@"第二个"]) {
         self.dataCount = 50;
+        
     } else {
         self.dataCount = 100;
     }
@@ -35,6 +36,12 @@
     self.tableView.rowHeight = 60;
     [self.view addSubview:_tableView];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
+    
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [self.tableView reloadData];
+//    });
+    
+
 }
 
 #pragma mark - UITableViewDataSource
