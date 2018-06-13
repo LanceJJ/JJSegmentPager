@@ -60,7 +60,7 @@
 {
     //自定义表头
     JJCustomHeader *headerView = [[[NSBundle mainBundle] loadNibNamed:@"JJCustomHeader" owner:self options:nil] lastObject];
-    
+
     //第一个
     JJTableViewController *one = [[JJTableViewController alloc] init];
     one.title = @"第一个";
@@ -116,7 +116,7 @@
     } else {
         [self.navigationController.navigationBar jj_setBackgroundColor:[color colorWithAlphaComponent:0]];
     }
-    
+
     if (offsetY >= 136) {
         self.imageView.alpha = 1;
     } else {

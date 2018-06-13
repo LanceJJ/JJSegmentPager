@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -27,17 +26,16 @@
                     </constraints>
                 </imageView>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="Jap-bD-7fs" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="8Qa-Jz-Zg7"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="Jap-bD-7fs" secondAttribute="bottom" id="Cu4-N5-epC"/>
+                <constraint firstItem="Jap-bD-7fs" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="8Qa-Jz-Zg7"/>
+                <constraint firstAttribute="bottom" secondItem="Jap-bD-7fs" secondAttribute="bottom" id="Cu4-N5-epC"/>
                 <constraint firstItem="53X-b3-7nP" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="PhO-i8-bgQ"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Jap-bD-7fs" secondAttribute="trailing" id="R6U-nc-sWL"/>
-                <constraint firstItem="Jap-bD-7fs" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="ZCX-qE-Shk"/>
+                <constraint firstAttribute="trailing" secondItem="Jap-bD-7fs" secondAttribute="trailing" id="R6U-nc-sWL"/>
+                <constraint firstItem="Jap-bD-7fs" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ZCX-qE-Shk"/>
                 <constraint firstItem="53X-b3-7nP" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="pwV-p1-IRK"/>
             </constraints>
+            <nil key="simulatedTopBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="headerImageH" destination="laq-p1-Lvn" id="Qx3-7S-n5L"/>
                 <outlet property="headerImageW" destination="qLd-qq-EFU" id="BlY-wk-W58"/>

@@ -165,13 +165,13 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 
     [self.headerView addConstraint:headerHeightCos];
     self.headerHeightCos = headerHeightCos;
-    
+
     //顶部约束
     NSLayoutConstraint *headerTopCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeTop multiplier:1.0 constant:0];
-    
+
     [self.view addConstraint:headerTopCos];
     self.headerTopCos = headerTopCos;
-    
+
     //左边约束
     NSLayoutConstraint *headerLeftCos = [NSLayoutConstraint constraintWithItem:self.headerView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeLeading multiplier:1.0f constant:0.0f];
 
@@ -552,7 +552,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
             if (self.headerViewChangeType == JJHeaderViewSizeChangeType) {//改变尺寸
 
                 self.headerHeightCos.constant = self.segmentTopInset;
-                
+            
             } else if (self.headerViewChangeType == JJHeaderViewPositionChangeType) {//改变位置
 
                 self.headerTopCos.constant = self.segmentTopInset - self.headerHeight;
