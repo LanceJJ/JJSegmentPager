@@ -360,6 +360,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     //防止偏移
     if (@available(iOS 11.0, *)) {
         scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        pageController.automaticallyAdjustsScrollViewInsets = NO;
     }
     
     
@@ -370,24 +372,14 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         scrollView.alwaysBounceVertical = YES;
         self.originalTopInset = self.headerHeight + self.segmentHeight;
 
-
         CGFloat bottomInset = 0;
         if (self.tabBarController.tabBar.hidden == NO) {
             bottomInset = CGRectGetHeight(self.tabBarController.tabBar.bounds);
         }
         
-        CGFloat contentH = scrollView.contentSize.height;
-        CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
-        
-        if (contentH < screenH && self.enableContentSizeChanged && self.enableOffsetChanged) {
-            
-            scrollView.contentSize = CGSizeMake(self.view.frame.size.width, screenH);
-        }
-
         [scrollView setContentInset:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
         [scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
     
-
         if (![self.hasShownControllers containsObject:pageController]) {
             [self.hasShownControllers addObject:pageController];
 
@@ -404,7 +396,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
             tableView.didReloadData = ^{
 
                 CGFloat contentH = weakTableView.contentSize.height;
-
                 CGFloat screenH = JJ_SCREEN_HEIGHT - weakSelf.navTabBarHeight - weakSelf.segmentMiniTopInset - weakSelf.segmentHeight - weakSelf.footerHeight;
 
                 if (contentH < screenH && weakSelf.enableContentSizeChanged && weakSelf.enableOffsetChanged) {
@@ -421,7 +412,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         
     } else {
         
-        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, self.view.frame.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight - self.footerHeight);
+        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight - self.footerHeight);
     }
 }
 
@@ -481,10 +472,10 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
     
     if (contentH < screenH && self.tempContentH == contentH && self.enableContentSizeChanged && self.enableOffsetChanged) {
-        
+    
         scrollView.contentSize = CGSizeMake(self.view.frame.size.width, screenH);
     }
-    
+
     self.tempContentH = contentH;
     
     if (context == _JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET &&

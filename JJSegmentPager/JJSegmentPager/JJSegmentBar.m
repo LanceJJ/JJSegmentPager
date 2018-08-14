@@ -376,7 +376,9 @@ static CGFloat viewHeight;
     
     if (segmentBtnType == JJSegmentBtnSameWidthType) return;
     
-    [self updateButtonsFrame];
+    CGFloat allWidth = [self updateButtonsFrame];
+    
+    self.scrollview.contentSize = CGSizeMake(allWidth, viewHeight);
     
     for (NSInteger i = 0; i < self.buttonsArray.count; i++) {
         

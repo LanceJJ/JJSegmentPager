@@ -28,12 +28,12 @@
 
 - (void)setupBaseConfigs
 {
+    self.backgroundColor = [UIColor whiteColor];
     self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
     self.imageView.image = [UIImage imageNamed:@"20140306110441515.jpg"];
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.clipsToBounds = YES;
     [self addSubview:self.imageView];
-    
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event

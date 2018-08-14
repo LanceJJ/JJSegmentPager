@@ -19,7 +19,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="381" height="248"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timg (1).jpeg" translatesAutoresizingMaskIntoConstraints="NO" id="53X-b3-7nP">
-                    <rect key="frame" x="150" y="84" width="80" height="80"/>
+                    <rect key="frame" x="150.5" y="84" width="80" height="80"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="laq-p1-Lvn"/>
                         <constraint firstAttribute="width" constant="80" id="qLd-qq-EFU"/>
