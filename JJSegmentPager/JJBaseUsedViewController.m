@@ -57,7 +57,6 @@
 //    pager.barHighlightBackgroundColor = [UIColor lightGrayColor];//按钮点击高亮颜色，默认透明
 //    pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
 //    pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
-//    pager.enableContentSizeChanged = YES;//允许列表的数据源过小时,仍可向上滑动,来改变表头偏移量，默认不允许NO
 //    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
     pager.needShadow = YES;//设置segmentBar是否带阴影效果，默认不带NO
 //    pager.customBarView = customBarView;//自定义标签按钮

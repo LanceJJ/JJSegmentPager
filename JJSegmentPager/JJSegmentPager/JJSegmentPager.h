@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242, 2688), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(828, 1792), [[UIScreen mainScreen] currentMode].size)) : NO)
 
 #define kNavHeight (iPhoneX ? 88 : 64)
 
@@ -27,14 +27,16 @@ typedef NS_ENUM(NSUInteger, JJBarIndicatorType) {
 
 /**
  Description 标签按钮宽度类型
-
+ 
  - JJBarSegmentBtnSameWidthType: 等宽类型（默认）
- - JJBarSegmentBtnAutoWidthType: 自动适应文字宽度类型
+ - JJBarSegmentBtnAutoWidthType1: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮均分)
+ - JJBarSegmentBtnAutoWidthType2: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮从左侧依次布局)
  */
 typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
     
     JJBarSegmentBtnSameWidthType,
-    JJBarSegmentBtnAutoWidthType
+    JJBarSegmentBtnAutoWidthType1,
+    JJBarSegmentBtnAutoWidthType2,
 };
 
 /**
@@ -111,6 +113,11 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
 @property (nonatomic, strong) UIColor *barSelectColor;
 
 /**
+ Description 底部指示器颜色（默认标题点击颜色）
+ */
+@property (nonatomic, strong) UIColor *barIndicatorColor;
+
+/**
  Description segmentBar的内边距（默认UIEdgeInsetsZero）
  */
 @property (nonatomic, assign) UIEdgeInsets barContentInset;
@@ -166,11 +173,6 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
 @property (nonatomic, assign) BOOL enableOffsetChanged;
 
 /**
- Description 允许列表的数据源过小时,仍可向上滑动,来改变表头偏移量（默认不允许NO）
- */
-@property (nonatomic, assign) BOOL enableContentSizeChanged;
-
-/**
  Description 允许页面可以左右滑动切换（默认不允许NO）
  */
 @property (nonatomic, assign) BOOL enableScrollViewDrag;
@@ -214,5 +216,17 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
  @param block 当前页面位置
  */
 - (void)scrollViewDidEndDeceleratingBlock:(void(^)(NSInteger currentPage))block;
+
+/**
+ Description 重新布局界面
+ */
+- (void)reloadViews;
+
+/**
+ Description 更新表头高度
+ 
+ @param height 高度
+ */
+- (void)updateHeaderHeight:(CGFloat)height;
 
 @end

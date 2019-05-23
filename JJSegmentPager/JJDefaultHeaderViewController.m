@@ -68,8 +68,7 @@
     pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
     pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
 //    pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
-    pager.enableContentSizeChanged = YES;//允许列表的数据源过小时,仍可向上滑动,来改变表头偏移量，默认不允许NO
-    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
+//    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
     pager.needShadow = YES;//设置segmentBar阴影
     [pager addParentController:self];
     

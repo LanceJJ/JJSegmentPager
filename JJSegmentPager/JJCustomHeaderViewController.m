@@ -60,6 +60,8 @@
 {
     //自定义表头
     JJCustomHeader *headerView = [[[NSBundle mainBundle] loadNibNamed:@"JJCustomHeader" owner:self options:nil] lastObject];
+    
+//    headerView.userInteractionEnabled = NO;
 
     //第一个
     JJTableViewController *one = [[JJTableViewController alloc] init];
@@ -83,11 +85,11 @@
     pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
     pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
     pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
-    pager.enableContentSizeChanged = YES;//允许列表的数据源过小时,仍可向上滑动,来改变表头偏移量，默认不允许NO
     pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
     pager.needShadow = YES;//设置segmentBar阴影
     pager.customHeaderView = headerView;//自定义表头
     [pager addParentController:self];
+    
     
     __weak typeof(self) vc = self;
     //列表滑动过程中偏移量数值回调 返回bar到控制器顶端的距离

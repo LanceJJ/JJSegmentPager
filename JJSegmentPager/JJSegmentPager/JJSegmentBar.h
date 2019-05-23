@@ -25,14 +25,16 @@ typedef NS_ENUM(NSUInteger, JJIndicatorWidthType) {
 
 /**
  Description 标签按钮宽度类型
-
+ 
  - JJSegmentBtnSameWidthType: 等宽类型（默认）
- - JJSegmentBtnAutoWidthType: 自动适应文字宽度类型
+ - JJSegmentBtnAutoWidthType1: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮均分)
+ - JJSegmentBtnAutoWidthType2: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮从左侧依次布局)
  */
 typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
     
     JJSegmentBtnSameWidthType,
-    JJSegmentBtnAutoWidthType
+    JJSegmentBtnAutoWidthType1,
+    JJSegmentBtnAutoWidthType2
 };
 
 
@@ -64,9 +66,10 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
  @param titles 标题
  @param normalColor 标题正常颜色（默认黑色）
  @param selectColor 标题点击颜色（默认蓝色）
+ @param indicatorColor 底部指示器颜色（默认标题点击颜色）
  @param currentPage 初始化按钮显示位置 (默认0)
  */
-- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor currentPage:(NSInteger)currentPage;
+- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor indicatorColor:(UIColor *)indicatorColor currentPage:(NSInteger)currentPage;
 
 /**
  Description 按钮点击回调

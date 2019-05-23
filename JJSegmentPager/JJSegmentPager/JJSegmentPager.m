@@ -10,7 +10,7 @@
 #import "JJSegmentBar.h"
 #import "JJSegmentHeader.h"
 #import "JJSegmentScrollView.h"
-#import "UITableView+JJRuntime.h"
+#import "UIScrollView+JJRuntime.h"
 
 #define JJ_SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 
@@ -37,8 +37,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 @property (nonatomic, assign) CGFloat segmentTopInset;
 @property (nonatomic, assign) CGFloat originalTopInset;
 @property (nonatomic, assign) CGFloat navTabBarHeight;
+@property (nonatomic, assign) CGFloat bottomInset;
 @property (nonatomic, assign) CGFloat currentOffsetY;
-@property (nonatomic, assign) CGFloat tempContentH;
 @property (nonatomic, assign) BOOL ignoreOffsetChanged;
 
 @property (nonatomic, strong) NSLayoutConstraint *headerHeightCos;
@@ -65,8 +65,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
     if (self.subControllers.count == 0 || self.subControllers == nil) return;
     
-    self.currentPage = self.currentPage > self.subControllers.count - 1 ? 0 : self.currentPage;
-    self.enableOffsetChanged = self.enableContentSizeChanged == NO ? self.enableOffsetChanged : self.enableContentSizeChanged;
+    self.currentPage = (self.currentPage > self.subControllers.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
     self.ignoreOffsetChanged = !self.enableOffsetChanged;
     self.segmentTopInset = self.headerHeight;
     
@@ -82,11 +81,11 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 {
     self.needShadow = NO;
     self.ignoreOffsetChanged = YES;
-    self.enableContentSizeChanged = NO;
     self.enableScrollViewDrag = NO;
     self.currentPage = 0;
     self.headerHeight = 0;
     self.footerHeight = 0;
+    self.bottomInset = 0;
     self.segmentHeight = 44;
     self.barContentInset = UIEdgeInsetsZero;
     self.segmentTopInset = 0;
@@ -155,7 +154,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
 {
     self.headerView = [self defaultHeaderView];
 //    self.headerView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.headerHeight);
-    self.headerView.userInteractionEnabled = NO;
+
     self.headerView.clipsToBounds = YES;
     [self.rootScrollView addSubview:_headerView];
     
@@ -295,14 +294,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     self.segmentBar.backgroundColor = self.barBackgroundColor;
     self.segmentBar.highlightBackgroundColor = self.barHighlightBackgroundColor;
     
-    //设置标签底部指示器宽度类型
-    self.segmentBar.indicatorType = self.barIndicatorType == JJBarIndicatorSameWidthType ? JJIndicatorSameWidthType : JJIndicatorAutoWidthType;
-    
-    //设置标签按钮宽度类型
-    self.segmentBar.segmentBtnType = self.barSegmentBtnWidthType == JJBarSegmentBtnSameWidthType ? JJSegmentBtnSameWidthType : JJSegmentBtnAutoWidthType;
-    
     //初始化数据
-    [self.segmentBar setTitles:titles normalColor:self.barNormalColor selectColor:self.barSelectColor currentPage:self.currentPage];
+    [self.segmentBar setTitles:titles normalColor:self.barNormalColor selectColor:self.barSelectColor indicatorColor:self.barIndicatorColor currentPage:self.currentPage];
     
     //按钮点击回调
     __weak typeof(self) vc = self;
@@ -315,6 +308,18 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
             vc.selectSegmentBarBlock(button.tag);
         }
     }];
+    
+    //设置标签底部指示器宽度类型
+    self.segmentBar.indicatorType = self.barIndicatorType == JJBarIndicatorSameWidthType ? JJIndicatorSameWidthType : JJIndicatorAutoWidthType;
+    
+    //设置标签按钮宽度类型
+    if (self.barSegmentBtnWidthType == JJBarSegmentBtnSameWidthType) {
+        self.segmentBar.segmentBtnType = JJSegmentBtnSameWidthType;
+    } else if (self.barSegmentBtnWidthType == JJBarSegmentBtnAutoWidthType1) {
+        self.segmentBar.segmentBtnType = JJSegmentBtnAutoWidthType1;
+    } else if (self.barSegmentBtnWidthType == JJBarSegmentBtnAutoWidthType2) {
+        self.segmentBar.segmentBtnType = JJSegmentBtnAutoWidthType2;
+    }
     
     return self.segmentBar;
 }
@@ -372,10 +377,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         scrollView.alwaysBounceVertical = YES;
         self.originalTopInset = self.headerHeight + self.segmentHeight;
 
-        CGFloat bottomInset = 0;
-        if (self.tabBarController.tabBar.hidden == NO) {
-            bottomInset = CGRectGetHeight(self.tabBarController.tabBar.bounds);
-        }
+        CGFloat bottomInset = self.bottomInset;
         
         [scrollView setContentInset:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
         [scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
@@ -388,31 +390,20 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         
         self.currentOffsetY = -self.segmentTopInset - self.segmentHeight;
         
-        if ([scrollView isKindOfClass:[UITableView class]]) {
-
-            UITableView *tableView = (UITableView *)scrollView;
-            __weak typeof(tableView)  weakTableView = tableView;
-            __weak typeof(self) weakSelf = self;
-            tableView.didReloadData = ^{
-
-                CGFloat contentH = weakTableView.contentSize.height;
-                CGFloat screenH = JJ_SCREEN_HEIGHT - weakSelf.navTabBarHeight - weakSelf.segmentMiniTopInset - weakSelf.segmentHeight - weakSelf.footerHeight;
-
-                if (contentH < screenH && weakSelf.enableContentSizeChanged && weakSelf.enableOffsetChanged) {
-
-                    weakTableView.contentSize = CGSizeMake(weakSelf.view.frame.size.width, screenH);
-
-                }
-
-//                if (weakTableView.contentOffset.y != weakSelf.currentOffsetY) {
-//                    [scrollView setContentOffset:CGPointMake(0, weakSelf.currentOffsetY)];
-//                }
-            };
+        if (self.enableOffsetChanged) {
+            
+            CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
+            
+            scrollView.minContentSizeHeight = screenH;
+            
+            if (scrollView.contentSize.height < screenH) {
+                scrollView.contentSize = CGSizeMake(scrollView.contentSize.width, screenH);
+            }
         }
         
     } else {
         
-        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight - self.footerHeight);
+        pageView.frame = CGRectMake(self.currentPage * self.view.frame.size.width, self.segmentHeight + self.headerHeight, self.view.frame.size.width, [UIScreen mainScreen].bounds.size.height - (self.segmentHeight + self.headerHeight) - self.navTabBarHeight - self.footerHeight - self.bottomInset);
     }
 }
 
@@ -466,18 +457,6 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     //segmentMiniTopInset不可大于headerHeight
     if (self.segmentMiniTopInset > self.headerHeight) self.segmentMiniTopInset = self.headerHeight;
     
-    UIScrollView *scrollView = object;
-    
-    CGFloat contentH = scrollView.contentSize.height;
-    CGFloat screenH = JJ_SCREEN_HEIGHT - self.navTabBarHeight - self.segmentMiniTopInset - self.segmentHeight - self.footerHeight;
-    
-    if (contentH < screenH && self.tempContentH == contentH && self.enableContentSizeChanged && self.enableOffsetChanged) {
-    
-        scrollView.contentSize = CGSizeMake(self.view.frame.size.width, screenH);
-    }
-
-    self.tempContentH = contentH;
-    
     if (context == _JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET &&
         !_ignoreOffsetChanged) {
         CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
@@ -486,6 +465,10 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         CGFloat oldOffsetY = oldOffset.y;
         CGFloat deltaOfOffsetY = offset.y - oldOffsetY;
         CGFloat offsetYWithSegment = offset.y + self.segmentHeight;
+        
+        NSLog(@"%f", offsetY);
+        NSLog(@"%f", oldOffsetY);
+        NSLog(@"++++++%f", deltaOfOffsetY);
 
         if (deltaOfOffsetY > 0 &&
             offsetY >= -(self.headerHeight + self.segmentHeight)) {
@@ -637,7 +620,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     //更新当前scrollView偏移量
     if (self.segmentTopInset != self.headerHeight) {
 
-        if (scrollView.contentOffset.y >= -(self.segmentHeight + self.headerHeight) && scrollView.contentOffset.y <= -self.segmentHeight) {
+        if (scrollView.contentOffset.y >= -(self.segmentTopInset + self.headerHeight) && scrollView.contentOffset.y <= -self.segmentHeight) {
             [scrollView setContentOffset:CGPointMake( 0, -self.segmentHeight - self.segmentTopInset) animated:NO];
         }
     }
@@ -662,6 +645,12 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     
     self.navTabBarHeight = viewController.navigationController.navigationBar.translucent == YES ? 0 : navH;
     self.navTabBarHeight = viewController.navigationController.navigationBar.hidden == YES || viewController.navigationController.navigationBarHidden == YES ? 0 : self.navTabBarHeight;
+    
+    if (viewController.navigationController.viewControllers.count == 0 || viewController.navigationController ==  nil) {
+        self.bottomInset = 0;
+    } else if ([viewController.navigationController.viewControllers.firstObject isKindOfClass:[viewController class]]){
+        self.bottomInset = viewController.tabBarController.tabBar.frame.size.height;
+    }
     
     viewController.automaticallyAdjustsScrollViewInsets = NO;
     [viewController.view addSubview:self.view];
@@ -705,6 +694,71 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         self.scrollViewDidEndDeceleratingBlock = block;
     }
 }
+
+/**
+ Description 重新布局界面
+ */
+- (void)reloadViews
+{
+    UIScrollView *scrollView = [self scrollViewInPageController:self.currentDisplayController];
+    
+    if (scrollView.contentOffset.y <= -self.segmentHeight) {
+        
+        scrollView.contentOffset = CGPointMake(0, -self.segmentTopInset - self.segmentHeight);
+        
+    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        
+        if (self.headerViewChangeType == JJHeaderViewSizeChangeType) {//改变尺寸
+            
+            self.headerHeightCos.constant = self.segmentTopInset;
+            
+        } else if (self.headerViewChangeType == JJHeaderViewPositionChangeType) {//改变位置
+            
+            self.headerTopCos.constant = self.segmentTopInset - self.headerHeight;
+        }
+    });
+}
+
+/**
+ Description 更新表头高度
+ 
+ @param height 高度
+ */
+- (void)updateHeaderHeight:(CGFloat)height
+{
+    self.headerHeight = height;
+    
+    for (UIViewController<JJSegmentDelegate> *controller in self.subControllers) {
+        
+        
+        UIScrollView *scrollView = [self scrollViewInPageController:controller];
+        
+        if (scrollView) {
+            
+            self.originalTopInset = self.headerHeight + self.segmentHeight;
+            
+            CGFloat bottomInset = self.bottomInset;
+            
+            [scrollView setContentInset:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
+            [scrollView setScrollIndicatorInsets:UIEdgeInsetsMake(self.originalTopInset, 0, bottomInset, 0)];
+            
+            if (![self.hasShownControllers containsObject:controller]) {
+                [self.hasShownControllers addObject:controller];
+                
+                [scrollView setContentOffset:CGPointMake(0, -self.segmentTopInset - self.segmentHeight)];
+                
+                NSLog(@"%f", scrollView.contentOffset.y);
+            }
+        }
+    }
+    
+    [self.headerView setNeedsLayout];
+    [self.headerView layoutSubviews];
+    [self.headerView layoutIfNeeded];
+}
+
 
 - (void)dealloc
 {

@@ -25,6 +25,7 @@ typedef void(^SelectedBlock) (JJSegmentBtn *button);
 @property (nonatomic, strong) UIView *indicatorView;
 @property (nonatomic, strong) UIColor *normalColor;
 @property (nonatomic, strong) UIColor *selectColor;
+@property (nonatomic, strong) UIColor *indicatorColor;
 @property (nonatomic, strong) NSArray *titles;
 
 @end
@@ -124,7 +125,7 @@ static CGFloat viewHeight;
         }
         
         //当所有按钮宽度总和小于屏幕宽度时，按钮还是等宽
-        if (allWidth <= viewWidth) {
+        if (allWidth <= viewWidth && self.segmentBtnType == JJSegmentBtnAutoWidthType1) {
             
             return [self setupSegmentBtnSameWidth];
             
@@ -221,7 +222,7 @@ static CGFloat viewHeight;
 {
     if (self.indicatorView) return;
     self.indicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, viewHeight - JJ_SegmentBar_BottomH, width - JJ_SegmentBar_Edge * 2, JJ_SegmentBar_BottomH)];
-    self.indicatorView.backgroundColor = self.selectColor;
+    self.indicatorView.backgroundColor = self.indicatorColor;
     self.indicatorView.center = CGPointMake(width / 2, viewHeight - JJ_SegmentBar_BottomH / 2);
     [self.scrollview addSubview:_indicatorView];
 }
@@ -278,8 +279,12 @@ static CGFloat viewHeight;
         scrollOffsetX = 0;
     }
     
-    if (scrollOffsetX > self.scrollview.contentSize.width - self.scrollview.frame.size.width) {
+    if (self.scrollview.contentSize.width - self.scrollview.frame.size.width < 0) {
+        scrollOffsetX = 0;
+    } else if (scrollOffsetX > self.scrollview.contentSize.width - self.scrollview.frame.size.width) {
         scrollOffsetX = self.scrollview.contentSize.width - self.scrollview.frame.size.width;
+    } else {
+        scrollOffsetX = 0;
     }
     
     [self.scrollview setContentOffset:CGPointMake(scrollOffsetX, 0) animated:YES];
@@ -293,9 +298,10 @@ static CGFloat viewHeight;
  @param titles 标题
  @param normalColor 标题正常颜色（默认黑色）
  @param selectColor 标题点击颜色（默认蓝色）
+ @param indicatorColor 底部指示器颜色（默认标题点击颜色）
  @param currentPage 初始化按钮显示位置 (默认0)
  */
-- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor currentPage:(NSInteger)currentPage
+- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor indicatorColor:(UIColor *)indicatorColor currentPage:(NSInteger)currentPage
 {
     if (titles.count == 0 || titles == nil) return;
     
@@ -305,9 +311,10 @@ static CGFloat viewHeight;
     
     self.selectColor = selectColor == nil ? [UIColor blueColor] : selectColor;
     self.normalColor = normalColor == nil ? [UIColor blackColor] : normalColor;
+    self.indicatorColor = indicatorColor == nil ? self.selectColor : indicatorColor;
     self.highlightBackgroundColor = _highlightBackgroundColor == nil ? [UIColor clearColor] : _highlightBackgroundColor;
     
-    self.indicatorView.backgroundColor = _selectColor;
+    self.indicatorView.backgroundColor = self.indicatorColor;
     
     for (JJSegmentBtn *allBtn in self.buttonsArray) {
         
