@@ -36,4 +36,13 @@
  */
 - (void)setTitleNormalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor;
 
+
+/**
+ Description 设置字体尺寸
+
+ @param normalFont 标题正常尺寸
+ @param selectFont 标题点击尺寸
+ */
+- (void)setTitleNormalFont:(UIFont *)normalFont selectFont:(UIFont *)selectFont;
+
 @end

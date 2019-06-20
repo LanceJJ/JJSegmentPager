@@ -17,6 +17,8 @@
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, strong) UIColor *selectedColor;
 @property (nonatomic, strong) UIColor *normalColor;
+@property (nonatomic, strong) UIFont *selectedFont;
+@property (nonatomic, strong) UIFont *normalFont;
 
 @end
 
@@ -108,12 +110,12 @@
     if (hasSelected) {
         
         [self setTitleColor:self.selectedColor forState:UIControlStateNormal];
-        self.titleLabel.font = [UIFont boldSystemFontOfSize:JJ_SegmentBtn_SelectedBtn_Font];
+        self.titleLabel.font = self.selectedFont;
         
     } else {
         
         [self setTitleColor:self.normalColor forState:UIControlStateNormal];
-        self.titleLabel.font = [UIFont systemFontOfSize:JJ_SegmentBtn_NormalBtn_Font];
+        self.titleLabel.font = self.normalFont;
     }
 }
 
@@ -130,4 +132,19 @@
     
     self.hasSelected = NO;
 }
+
+/**
+ Description 设置字体尺寸
+ 
+ @param normalFont 标题正常尺寸
+ @param selectFont 标题点击尺寸
+ */
+- (void)setTitleNormalFont:(UIFont *)normalFont selectFont:(UIFont *)selectFont
+{
+    self.selectedFont = selectFont == nil ? [UIFont boldSystemFontOfSize:JJ_SegmentBtn_SelectedBtn_Font] : selectFont;
+    self.normalFont = normalFont == nil ? [UIFont systemFontOfSize:JJ_SegmentBtn_NormalBtn_Font] : normalFont;
+    
+    self.hasSelected = NO;
+}
+
 @end

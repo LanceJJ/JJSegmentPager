@@ -20,26 +20,17 @@ typedef void(^SelectedBlock) (JJSegmentBtn *button);
 
 @property (nonatomic, copy) SelectedBlock selectedBlock;
 @property (nonatomic, strong) UIScrollView *scrollview;
-@property (nonatomic, strong) NSMutableArray *titlesArray;
 @property (nonatomic, strong) NSMutableArray *buttonsArray;
 @property (nonatomic, strong) UIView *indicatorView;
-@property (nonatomic, strong) UIColor *normalColor;
-@property (nonatomic, strong) UIColor *selectColor;
-@property (nonatomic, strong) UIColor *indicatorColor;
-@property (nonatomic, strong) NSArray *titles;
 
 @end
 
-static CGFloat viewWidth;
-static CGFloat viewHeight;
+//static CGFloat viewWidth;
+//static CGFloat viewHeight;
 @implementation JJSegmentBar
-
-- (NSMutableArray *)titlesArray
 {
-    if (!_titlesArray) {
-        _titlesArray = [NSMutableArray array];
-    }
-    return _titlesArray;
+    CGFloat viewWidth;
+    CGFloat viewHeight;
 }
 
 - (NSMutableArray *)buttonsArray
@@ -62,11 +53,6 @@ static CGFloat viewHeight;
         
         self.backgroundColor = [UIColor whiteColor];
         
-        self.scrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, viewWidth, viewHeight)];
-        self.scrollview.bounces = NO;
-        self.scrollview.showsHorizontalScrollIndicator = NO;
-        [self addSubview:_scrollview];
-        
     }
     return self;
 }
@@ -78,17 +64,14 @@ static CGFloat viewHeight;
  */
 - (void)setupTitles
 {
-    [self.titlesArray removeAllObjects];
     [self.buttonsArray removeAllObjects];
-    
-    [self.titlesArray addObjectsFromArray:self.titles];
     
     for (NSString *title in self.titles) {
         
         JJSegmentBtn *button = [[JJSegmentBtn alloc] initWithTitle:title];
         [self.buttonsArray addObject:button];
         
-        [button addTarget:self action:@selector(hasBeSelected:) forControlEvents:UIControlEventTouchUpInside];
+        [button addTarget:self action:@selector(segmentBtnAction:) forControlEvents:UIControlEventTouchUpInside];
         button.tag = [self.buttonsArray indexOfObject:button];
         
     }
@@ -224,6 +207,7 @@ static CGFloat viewHeight;
     self.indicatorView = [[UIView alloc] initWithFrame:CGRectMake(0, viewHeight - JJ_SegmentBar_BottomH, width - JJ_SegmentBar_Edge * 2, JJ_SegmentBar_BottomH)];
     self.indicatorView.backgroundColor = self.indicatorColor;
     self.indicatorView.center = CGPointMake(width / 2, viewHeight - JJ_SegmentBar_BottomH / 2);
+    self.indicatorView.layer.cornerRadius = self.indicatorCornerRadius;
     [self.scrollview addSubview:_indicatorView];
 }
 
@@ -232,7 +216,18 @@ static CGFloat viewHeight;
  
  @param button HTSegmentBtn
  */
-- (void)hasBeSelected:(JJSegmentBtn *)button
+- (void)segmentBtnAction:(JJSegmentBtn *)button
+{
+    [self segmentBtnSelected:button duration:0.3];
+}
+
+/**
+ Description 切换按钮状态
+
+ @param button 按钮
+ @param duration 动画时间
+ */
+- (void)segmentBtnSelected:(JJSegmentBtn *)button duration:(NSTimeInterval)duration
 {
     if (button.hasSelected == NO) {
         
@@ -250,14 +245,18 @@ static CGFloat viewHeight;
         
         CGFloat currentBtnWidth = button.frame.size.width - JJ_SegmentBar_Edge * 2;
         
+        //如果设置的高度小于0，或者大于按钮高度的1/3，显示默认高度
+        self.indicatorHeight = (self.indicatorHeight <= 0 || self.indicatorHeight > viewHeight / 3.0) ? JJ_SegmentBar_BottomH : self.indicatorHeight;
+        //如果设置的宽度小于0，或者大于按钮宽度，显示默认宽度
+        self.indicatorWidth = (self.indicatorWidth <= 0 || self.indicatorWidth > currentBtnWidth) ? currentBtnWidth : self.indicatorWidth;
         
         CGFloat btnTitleWidth = button.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth: button.titleLabel.frame.size.width;
-        CGFloat indicatorWidth = self.indicatorType == JJIndicatorSameWidthType ? currentBtnWidth : btnTitleWidth;
+        CGFloat indicatorWidth = self.indicatorType == JJIndicatorSameWidthType ? self.indicatorWidth : btnTitleWidth;
         
-        [UIView animateWithDuration:0.3 animations:^{
+        [UIView animateWithDuration:duration animations:^{
             
-            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, JJ_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(button.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
+            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, self.indicatorHeight);
+            self.indicatorView.center = CGPointMake(button.center.x , viewHeight - self.indicatorHeight / 2);
         }];
     }
     
@@ -268,7 +267,6 @@ static CGFloat viewHeight;
     // 在当前屏幕中偏移量
     CGFloat selectOffsetX = button.frame.origin.x - self.scrollview.contentOffset.x;
     
-    
     if (selectOffsetX < screenX) {
         scrollOffsetX -= screenX - selectOffsetX;
     }else{
@@ -278,136 +276,51 @@ static CGFloat viewHeight;
     if (scrollOffsetX < 0) {
         scrollOffsetX = 0;
     }
-    
+
     if (self.scrollview.contentSize.width - self.scrollview.frame.size.width < 0) {
         scrollOffsetX = 0;
     } else if (scrollOffsetX > self.scrollview.contentSize.width - self.scrollview.frame.size.width) {
         scrollOffsetX = self.scrollview.contentSize.width - self.scrollview.frame.size.width;
     } else {
-        scrollOffsetX = 0;
+//        scrollOffsetX = 0;
     }
     
     [self.scrollview setContentOffset:CGPointMake(scrollOffsetX, 0) animated:YES];
 }
 
-#pragma mark - public methods
-
 /**
- Description 设置参数
- 
- @param titles 标题
- @param normalColor 标题正常颜色（默认黑色）
- @param selectColor 标题点击颜色（默认蓝色）
- @param indicatorColor 底部指示器颜色（默认标题点击颜色）
- @param currentPage 初始化按钮显示位置 (默认0)
+ Description 初始化各项参数配置
  */
-- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor indicatorColor:(UIColor *)indicatorColor currentPage:(NSInteger)currentPage
+- (void)setupConfigureAppearance
 {
-    if (titles.count == 0 || titles == nil) return;
+    if (self.titles.count == 0 || self.titles == nil) return;
+
+    self.scrollview = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, viewWidth, viewHeight)];
+    self.scrollview.bounces = NO;
+    self.scrollview.showsHorizontalScrollIndicator = NO;
+    [self addSubview:_scrollview];
     
-    self.titles = titles;
+    self.selectColor = self.selectColor == nil ? [UIColor blueColor] : self.selectColor;
+    self.normalColor = self.normalColor == nil ? [UIColor blackColor] : self.normalColor;
+    self.indicatorColor = self.indicatorColor == nil ? self.selectColor : self.indicatorColor;
+    self.highlightBackgroundColor = self.highlightBackgroundColor == nil ? [UIColor clearColor] : self.highlightBackgroundColor;
     
     [self setupTitles];
-    
-    self.selectColor = selectColor == nil ? [UIColor blueColor] : selectColor;
-    self.normalColor = normalColor == nil ? [UIColor blackColor] : normalColor;
-    self.indicatorColor = indicatorColor == nil ? self.selectColor : indicatorColor;
-    self.highlightBackgroundColor = _highlightBackgroundColor == nil ? [UIColor clearColor] : _highlightBackgroundColor;
-    
-    self.indicatorView.backgroundColor = self.indicatorColor;
     
     for (JJSegmentBtn *allBtn in self.buttonsArray) {
         
         [allBtn setTitleNormalColor:self.normalColor selectColor:self.selectColor];
-    }
-    self.currentPage = currentPage < titles.count ? currentPage : 0;
-}
-
-#pragma mark - set methods
-
-- (void)setCurrentPage:(NSInteger)currentPage
-{
-    _currentPage = currentPage;
-    
-    if (self.buttonsArray.count == 0 || self.buttonsArray.count - 1 < currentPage) return;
-    
-    JJSegmentBtn *button = self.buttonsArray[currentPage];
-    
-    [self hasBeSelected:button];
-}
-
-- (void)setHighlightBackgroundColor:(UIColor *)highlightBackgroundColor
-{
-    _highlightBackgroundColor = highlightBackgroundColor;
-    
-    if (self.buttonsArray.count == 0 || self.buttonsArray == nil) return;
-    
-    for (JJSegmentBtn *allBtn in self.buttonsArray) {
-        
-        allBtn.highlightColor = _highlightBackgroundColor;
-        
-    }
-}
-
-- (void)setIndicatorType:(JJIndicatorWidthType)indicatorType
-{
-    _indicatorType = indicatorType;
-    
-    if (self.buttonsArray.count == 0 || self.buttonsArray == nil) return;
-    
-    if (indicatorType == JJIndicatorSameWidthType) return;
-    
-    for (NSInteger i = 0; i < self.buttonsArray.count; i++) {
-        
-        if (i == _currentPage) {
-            
-            JJSegmentBtn *currentBtn = self.buttonsArray[i];
-            
-            [currentBtn.titleLabel sizeToFit];
-            
-            CGFloat currentBtnWidth = currentBtn.frame.size.width - JJ_SegmentBar_Edge * 2;
-            
-            CGFloat btnTitleWidth = currentBtn.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth : currentBtn.titleLabel.frame.size.width;
-            
-            self.indicatorView.frame = CGRectMake(0, 0, btnTitleWidth, JJ_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
-        }
-    }
-}
-
-- (void)setSegmentBtnType:(JJSegmentBtnWidthType)segmentBtnType
-{
-    _segmentBtnType = segmentBtnType;
-    
-    if (self.buttonsArray.count == 0 || self.buttonsArray == nil) return;
-    
-    if (segmentBtnType == JJSegmentBtnSameWidthType) return;
-    
-    CGFloat allWidth = [self updateButtonsFrame];
-    
-    self.scrollview.contentSize = CGSizeMake(allWidth, viewHeight);
-    
-    for (NSInteger i = 0; i < self.buttonsArray.count; i++) {
-        
-        if (i == _currentPage) {
-            
-            JJSegmentBtn *currentBtn = self.buttonsArray[i];
-            
-            [currentBtn.titleLabel sizeToFit];
-            
-            CGFloat currentBtnWidth = currentBtn.frame.size.width - JJ_SegmentBar_Edge * 2;
-            
-            CGFloat btnTitleWidth = currentBtn.titleLabel.frame.size.width > currentBtnWidth ? currentBtnWidth: currentBtn.titleLabel.frame.size.width;
-            CGFloat indicatorWidth = self.indicatorType == JJIndicatorSameWidthType ? currentBtnWidth : btnTitleWidth;
-            
-            self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, JJ_SegmentBar_BottomH);
-            self.indicatorView.center = CGPointMake(currentBtn.center.x , viewHeight - JJ_SegmentBar_BottomH / 2);
-        }
+        [allBtn setTitleNormalFont:self.normalFont selectFont:self.selectFont];
+        allBtn.highlightColor = self.highlightBackgroundColor;
     }
     
+    self.currentPage = (self.currentPage > self.titles.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
+    
+    JJSegmentBtn *button = self.buttonsArray[self.currentPage];
+    
+    [self segmentBtnSelected:button duration:0.0];
+    
 }
-
-#pragma mark - block methods
 
 /**
  Description 按钮点击回调
@@ -420,6 +333,5 @@ static CGFloat viewHeight;
         self.selectedBlock = block;
     }
 }
-
 
 @end

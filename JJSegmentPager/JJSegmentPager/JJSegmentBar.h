@@ -51,9 +51,39 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 @property (nonatomic, assign) JJSegmentBtnWidthType segmentBtnType;
 
 /**
+ Description 标题数组
+ */
+@property (nonatomic, strong) NSArray *titles;
+
+/**
  Description 当前按钮位置
  */
 @property (nonatomic, assign) NSInteger currentPage;
+
+/**
+ Description 标题正常尺寸（[UIFont systemFontOfSize:16]）
+ */
+@property (nonatomic, strong) UIFont *normalFont;
+
+/**
+ Description 标题点击尺寸（[UIFont boldSystemFontOfSize:17]）
+ */
+@property (nonatomic, strong) UIFont *selectFont;
+
+/**
+ Description 标题正常颜色（默认黑色）
+ */
+@property (nonatomic, strong) UIColor *normalColor;
+
+/**
+ Description 标题点击颜色（默认蓝色）
+ */
+@property (nonatomic, strong) UIColor *selectColor;
+
+/**
+ Description 底部指示器颜色（默认标题点击颜色）
+ */
+@property (nonatomic, strong) UIColor *indicatorColor;
 
 /**
  Description 按钮高亮背景色（默认透明）
@@ -61,15 +91,24 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 @property (nonatomic, strong) UIColor *highlightBackgroundColor;
 
 /**
- Description 设置参数
- 
- @param titles 标题
- @param normalColor 标题正常颜色（默认黑色）
- @param selectColor 标题点击颜色（默认蓝色）
- @param indicatorColor 底部指示器颜色（默认标题点击颜色）
- @param currentPage 初始化按钮显示位置 (默认0)
+ Description 底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
  */
-- (void)setTitles:(NSArray *)titles normalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor indicatorColor:(UIColor *)indicatorColor currentPage:(NSInteger)currentPage;
+@property (nonatomic, assign) CGFloat indicatorHeight;
+
+/**
+ Description 底部指示器宽度（当 JJIndicatorWidthType == JJIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
+ */
+@property (nonatomic, assign) CGFloat indicatorWidth;
+
+/**
+ Description 底部指示器圆角
+ */
+@property (nonatomic, assign) CGFloat indicatorCornerRadius;
+
+/**
+ Description 初始化各项参数配置
+ */
+- (void)setupConfigureAppearance;
 
 /**
  Description 按钮点击回调

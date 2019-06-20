@@ -118,6 +118,32 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
 @property (nonatomic, strong) UIColor *barIndicatorColor;
 
 /**
+ Description 标题正常尺寸（[UIFont systemFontOfSize:16]）
+ */
+@property (nonatomic, strong) UIFont *barNormalFont;
+
+/**
+ Description 标题点击尺寸（[UIFont boldSystemFontOfSize:17]）
+ */
+@property (nonatomic, strong) UIFont *barSelectFont;
+
+
+/**
+ Description 底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
+ */
+@property (nonatomic, assign) CGFloat barIndicatorHeight;
+
+/**
+ Description 底部指示器宽度（当 JJBarIndicatorType == JJBarIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
+ */
+@property (nonatomic, assign) CGFloat barIndicatorWidth;
+
+/**
+ Description 底部指示器圆角（默认0）
+ */
+@property (nonatomic, assign) CGFloat barIndicatorCornerRadius;
+
+/**
  Description segmentBar的内边距（默认UIEdgeInsetsZero）
  */
 @property (nonatomic, assign) UIEdgeInsets barContentInset;

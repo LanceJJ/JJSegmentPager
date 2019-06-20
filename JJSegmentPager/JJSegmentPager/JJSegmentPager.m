@@ -291,11 +291,18 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     //创建
     self.segmentBar = [[JJSegmentBar alloc] initWithFrame:[self segmentBarRect]];
     
+    self.segmentBar.titles = titles;
     self.segmentBar.backgroundColor = self.barBackgroundColor;
     self.segmentBar.highlightBackgroundColor = self.barHighlightBackgroundColor;
-    
-    //初始化数据
-    [self.segmentBar setTitles:titles normalColor:self.barNormalColor selectColor:self.barSelectColor indicatorColor:self.barIndicatorColor currentPage:self.currentPage];
+    self.segmentBar.indicatorColor = self.barIndicatorColor;
+    self.segmentBar.normalColor = self.barNormalColor;
+    self.segmentBar.selectColor = self.barSelectColor;
+    self.segmentBar.normalFont = self.barNormalFont;
+    self.segmentBar.selectFont = self.barSelectFont;
+    self.segmentBar.currentPage = self.currentPage;
+    self.segmentBar.indicatorHeight = self.barIndicatorHeight;
+    self.segmentBar.indicatorWidth = self.barIndicatorWidth;
+    self.segmentBar.indicatorCornerRadius = self.barIndicatorCornerRadius;
     
     //按钮点击回调
     __weak typeof(self) vc = self;
@@ -320,6 +327,8 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
     } else if (self.barSegmentBtnWidthType == JJBarSegmentBtnAutoWidthType2) {
         self.segmentBar.segmentBtnType = JJSegmentBtnAutoWidthType2;
     }
+    
+    [self.segmentBar setupConfigureAppearance];
     
     return self.segmentBar;
 }
