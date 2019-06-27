@@ -323,6 +323,22 @@ typedef void(^SelectedBlock) (JJSegmentBtn *button);
 }
 
 /**
+ Description 切换当前点击按钮位置
+ 
+ @param currentPage 当前按钮位置
+ */
+- (void)switchBtnWithCurrentPage:(NSInteger)currentPage
+{
+    self.currentPage = (currentPage > self.titles.count - 1 || currentPage < 0) ? 0 : currentPage;
+    
+    if (self.buttonsArray.count == 0 || self.buttonsArray.count - 1 < self.currentPage) return;
+    
+    JJSegmentBtn *button = self.buttonsArray[self.currentPage];
+    
+    [self segmentBtnSelected:button duration:0.3];
+}
+
+/**
  Description 按钮点击回调
  
  @param block block description

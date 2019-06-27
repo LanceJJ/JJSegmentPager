@@ -594,7 +594,7 @@ const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWINSET = &_JJSEGMENTPAGE_CURRNTPA
         CGFloat x = scrollView.contentOffset.x;
         NSInteger index = x / self.view.frame.size.width;
         
-        self.segmentBar.currentPage = index;
+        [self.segmentBar switchBtnWithCurrentPage:index];
         
         if (self.scrollViewDidEndDeceleratingBlock) {
             self.scrollViewDidEndDeceleratingBlock(index);

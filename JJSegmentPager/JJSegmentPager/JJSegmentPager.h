@@ -118,12 +118,12 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
 @property (nonatomic, strong) UIColor *barIndicatorColor;
 
 /**
- Description 标题正常尺寸（[UIFont systemFontOfSize:16]）
+ Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
  */
 @property (nonatomic, strong) UIFont *barNormalFont;
 
 /**
- Description 标题点击尺寸（[UIFont boldSystemFontOfSize:17]）
+ Description 标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
  */
 @property (nonatomic, strong) UIFont *barSelectFont;
 

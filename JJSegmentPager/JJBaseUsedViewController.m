@@ -51,8 +51,8 @@
 //    pager.segmentHeight = 44;//标签按钮高度，默认44
 //    pager.currentPage = 2;//当前标签按钮位置，默认0
 //    pager.barContentInset = UIEdgeInsetsMake(5, 30, 5, 30);//segmentBar的内边距，默认UIEdgeInsetsZero
-//    pager.barSelectColor = [UIColor blackColor];//标签按钮标题选中颜色，默认蓝色
-//    pager.barNormalColor = [UIColor redColor];//标签按钮标题非点击颜色，默认黑色
+//    pager.barSelectColor = [UIColor redColor];//标签按钮标题选中颜色，默认蓝色
+//    pager.barNormalColor = [UIColor orangeColor];//标签按钮标题非点击颜色，默认黑色
 //    pager.barBackgroundColor = [UIColor redColor];//标签按钮背景色，默认白色
 //    pager.barHighlightBackgroundColor = [UIColor lightGrayColor];//按钮点击高亮颜色，默认透明
     pager.barNormalFont = [UIFont systemFontOfSize:13];//标题正常尺寸，[UIFont systemFontOfSize:16]

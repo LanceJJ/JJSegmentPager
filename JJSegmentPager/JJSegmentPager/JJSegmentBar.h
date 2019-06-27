@@ -61,12 +61,12 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 @property (nonatomic, assign) NSInteger currentPage;
 
 /**
- Description 标题正常尺寸（[UIFont systemFontOfSize:16]）
+ Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
  */
 @property (nonatomic, strong) UIFont *normalFont;
 
 /**
- Description 标题点击尺寸（[UIFont boldSystemFontOfSize:17]）
+ Description 标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
  */
 @property (nonatomic, strong) UIFont *selectFont;
 
@@ -109,6 +109,13 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
  Description 初始化各项参数配置
  */
 - (void)setupConfigureAppearance;
+
+/**
+ Description 切换当前点击按钮位置
+
+ @param currentPage 当前按钮位置
+ */
+- (void)switchBtnWithCurrentPage:(NSInteger)currentPage;
 
 /**
  Description 按钮点击回调
