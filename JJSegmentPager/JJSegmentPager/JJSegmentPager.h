@@ -209,6 +209,11 @@ typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
 @property (nonatomic, assign) BOOL needShadow;
 
 /**
+ Description 设置segmentBar是否带底部线条效果（默认不带NO）
+ */
+@property (nonatomic, assign) BOOL needLine;
+
+/**
  Description 添加父控制器
  
  @param viewController 控制器

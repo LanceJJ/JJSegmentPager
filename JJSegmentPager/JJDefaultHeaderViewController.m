@@ -27,7 +27,7 @@
     [super viewWillAppear:YES];
     [self.navigationController.navigationBar setShadowImage:[UIImage new]];
     [self.navigationController.navigationBar jj_setBackgroundColor:[UIColor clearColor]];
-    [self updateNavigationBarWithOffsetY:HEADER_HEIGHT - self.offsetY];
+    [self updateNavigationBarWithOffsetY:0];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -83,7 +83,6 @@
         
         NSLog(@"%f", top);
     }];
-    
 }
 
 
