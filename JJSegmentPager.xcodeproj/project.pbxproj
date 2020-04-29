@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7E147A69225C365A0061C7F6 /* UIScrollView+JJRuntime.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E147A68225C365A0061C7F6 /* UIScrollView+JJRuntime.m */; };
+		7E1F30832452F6BF009D6198 /* JJSegmentTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E1F30822452F6BF009D6198 /* JJSegmentTableView.m */; };
+		7E207C022459486700CE6562 /* UIScrollView+JJExchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E207C012459486700CE6562 /* UIScrollView+JJExchange.m */; };
+		7E207C0524594E8800CE6562 /* JJNavigationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E207C0424594E8800CE6562 /* JJNavigationView.m */; };
+		7E207C072459531100CE6562 /* JJNavigationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E207C062459531100CE6562 /* JJNavigationView.xib */; };
+		7E207C0A24595D5000CE6562 /* JJChangeBarStyleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E207C0924595D5000CE6562 /* JJChangeBarStyleViewController.m */; };
 		7E2C86FC209FF64100C24E3F /* JJCustomFooterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E2C86FB209FF64100C24E3F /* JJCustomFooterViewController.m */; };
 		7E5661EA2092C73900CA362F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5661E92092C73900CA362F /* AppDelegate.m */; };
 		7E5661ED2092C73900CA362F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5661EC2092C73900CA362F /* ViewController.m */; };
@@ -17,24 +21,19 @@
 		7E5661F82092C73900CA362F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5661F72092C73900CA362F /* main.m */; };
 		7E5662022092C73900CA362F /* JJSegmentPagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662012092C73900CA362F /* JJSegmentPagerTests.m */; };
 		7E56620D2092C73900CA362F /* JJSegmentPagerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E56620C2092C73900CA362F /* JJSegmentPagerUITests.m */; };
-		7E56621E2092C7BB00CA362F /* ezgif.com-optimize.gif in Resources */ = {isa = PBXBuildFile; fileRef = 7E56621C2092C7BB00CA362F /* ezgif.com-optimize.gif */; };
-		7E56621F2092C7BB00CA362F /* ezgif.com-optimize-1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 7E56621D2092C7BB00CA362F /* ezgif.com-optimize-1.gif */; };
 		7E5662222092C80100CA362F /* JJSegmentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662212092C80100CA362F /* JJSegmentScrollView.m */; };
-		7E5662252092C83A00CA362F /* JJSegmentHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662242092C83A00CA362F /* JJSegmentHeader.m */; };
 		7E5662282092C87600CA362F /* JJSegmentBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662272092C87600CA362F /* JJSegmentBtn.m */; };
 		7E56622B2092C8F200CA362F /* JJSegmentBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E56622A2092C8F200CA362F /* JJSegmentBar.m */; };
 		7E56622E2092CA1600CA362F /* JJSegmentPager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E56622D2092CA1600CA362F /* JJSegmentPager.m */; };
 		7E5662312092CB9900CA362F /* JJBaseUsedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662302092CB9900CA362F /* JJBaseUsedViewController.m */; };
-		7E5662342092CBB200CA362F /* JJDefaultHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662332092CBB200CA362F /* JJDefaultHeaderViewController.m */; };
 		7E5662372092CBC800CA362F /* JJCustomHeaderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662362092CBC800CA362F /* JJCustomHeaderViewController.m */; };
 		7E56623A2092CBDE00CA362F /* JJCustomBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662392092CBDE00CA362F /* JJCustomBarViewController.m */; };
 		7E56623D2092CBF600CA362F /* JJTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E56623C2092CBF600CA362F /* JJTableViewController.m */; };
-		7E5662402092CC5B00CA362F /* UINavigationBar+JJAwesome.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E56623F2092CC5B00CA362F /* UINavigationBar+JJAwesome.m */; };
-		7E5662422092CE3C00CA362F /* 20140306110441515.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7E5662412092CE3C00CA362F /* 20140306110441515.jpg */; };
 		7E5662452092CEB100CA362F /* JJCustomHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5662442092CEB100CA362F /* JJCustomHeader.m */; };
 		7E5662472092CEC600CA362F /* JJCustomHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E5662462092CEC600CA362F /* JJCustomHeader.xib */; };
 		7E56624A2092CEE300CA362F /* timg (1).jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 7E5662482092CEE300CA362F /* timg (1).jpeg */; };
 		7E56624B2092CEE300CA362F /* timg.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 7E5662492092CEE300CA362F /* timg.jpeg */; };
+		7E7C520E2456C270001DD51A /* JJSegmentPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7C520D2456C270001DD51A /* JJSegmentPageView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,8 +54,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7E147A67225C365A0061C7F6 /* UIScrollView+JJRuntime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+JJRuntime.h"; sourceTree = "<group>"; };
-		7E147A68225C365A0061C7F6 /* UIScrollView+JJRuntime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+JJRuntime.m"; sourceTree = "<group>"; };
+		7E1F30812452F6BF009D6198 /* JJSegmentTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentTableView.h; sourceTree = "<group>"; };
+		7E1F30822452F6BF009D6198 /* JJSegmentTableView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentTableView.m; sourceTree = "<group>"; };
+		7E207C002459486700CE6562 /* UIScrollView+JJExchange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+JJExchange.h"; sourceTree = "<group>"; };
+		7E207C012459486700CE6562 /* UIScrollView+JJExchange.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+JJExchange.m"; sourceTree = "<group>"; };
+		7E207C0324594E8800CE6562 /* JJNavigationView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJNavigationView.h; sourceTree = "<group>"; };
+		7E207C0424594E8800CE6562 /* JJNavigationView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJNavigationView.m; sourceTree = "<group>"; };
+		7E207C062459531100CE6562 /* JJNavigationView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JJNavigationView.xib; sourceTree = "<group>"; };
+		7E207C0824595D5000CE6562 /* JJChangeBarStyleViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJChangeBarStyleViewController.h; sourceTree = "<group>"; };
+		7E207C0924595D5000CE6562 /* JJChangeBarStyleViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJChangeBarStyleViewController.m; sourceTree = "<group>"; };
 		7E2C86FA209FF64100C24E3F /* JJCustomFooterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJCustomFooterViewController.h; sourceTree = "<group>"; };
 		7E2C86FB209FF64100C24E3F /* JJCustomFooterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJCustomFooterViewController.m; sourceTree = "<group>"; };
 		7E5661E52092C73800CA362F /* JJSegmentPager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JJSegmentPager.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,12 +81,8 @@
 		7E5662082092C73900CA362F /* JJSegmentPagerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JJSegmentPagerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E56620C2092C73900CA362F /* JJSegmentPagerUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentPagerUITests.m; sourceTree = "<group>"; };
 		7E56620E2092C73900CA362F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7E56621C2092C7BB00CA362F /* ezgif.com-optimize.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "ezgif.com-optimize.gif"; sourceTree = "<group>"; };
-		7E56621D2092C7BB00CA362F /* ezgif.com-optimize-1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "ezgif.com-optimize-1.gif"; sourceTree = "<group>"; };
 		7E5662202092C80100CA362F /* JJSegmentScrollView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentScrollView.h; sourceTree = "<group>"; };
 		7E5662212092C80100CA362F /* JJSegmentScrollView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentScrollView.m; sourceTree = "<group>"; };
-		7E5662232092C83A00CA362F /* JJSegmentHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentHeader.h; sourceTree = "<group>"; };
-		7E5662242092C83A00CA362F /* JJSegmentHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentHeader.m; sourceTree = "<group>"; };
 		7E5662262092C87600CA362F /* JJSegmentBtn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentBtn.h; sourceTree = "<group>"; };
 		7E5662272092C87600CA362F /* JJSegmentBtn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentBtn.m; sourceTree = "<group>"; };
 		7E5662292092C8F200CA362F /* JJSegmentBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentBar.h; sourceTree = "<group>"; };
@@ -89,22 +91,19 @@
 		7E56622D2092CA1600CA362F /* JJSegmentPager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentPager.m; sourceTree = "<group>"; };
 		7E56622F2092CB9900CA362F /* JJBaseUsedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJBaseUsedViewController.h; sourceTree = "<group>"; };
 		7E5662302092CB9900CA362F /* JJBaseUsedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJBaseUsedViewController.m; sourceTree = "<group>"; };
-		7E5662322092CBB200CA362F /* JJDefaultHeaderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJDefaultHeaderViewController.h; sourceTree = "<group>"; };
-		7E5662332092CBB200CA362F /* JJDefaultHeaderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJDefaultHeaderViewController.m; sourceTree = "<group>"; };
 		7E5662352092CBC800CA362F /* JJCustomHeaderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJCustomHeaderViewController.h; sourceTree = "<group>"; };
 		7E5662362092CBC800CA362F /* JJCustomHeaderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJCustomHeaderViewController.m; sourceTree = "<group>"; };
 		7E5662382092CBDE00CA362F /* JJCustomBarViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJCustomBarViewController.h; sourceTree = "<group>"; };
 		7E5662392092CBDE00CA362F /* JJCustomBarViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJCustomBarViewController.m; sourceTree = "<group>"; };
 		7E56623B2092CBF600CA362F /* JJTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJTableViewController.h; sourceTree = "<group>"; };
 		7E56623C2092CBF600CA362F /* JJTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJTableViewController.m; sourceTree = "<group>"; };
-		7E56623E2092CC5B00CA362F /* UINavigationBar+JJAwesome.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationBar+JJAwesome.h"; sourceTree = "<group>"; };
-		7E56623F2092CC5B00CA362F /* UINavigationBar+JJAwesome.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationBar+JJAwesome.m"; sourceTree = "<group>"; };
-		7E5662412092CE3C00CA362F /* 20140306110441515.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 20140306110441515.jpg; sourceTree = "<group>"; };
 		7E5662432092CEB100CA362F /* JJCustomHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJCustomHeader.h; sourceTree = "<group>"; };
 		7E5662442092CEB100CA362F /* JJCustomHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJCustomHeader.m; sourceTree = "<group>"; };
 		7E5662462092CEC600CA362F /* JJCustomHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JJCustomHeader.xib; sourceTree = "<group>"; };
 		7E5662482092CEE300CA362F /* timg (1).jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "timg (1).jpeg"; sourceTree = "<group>"; };
 		7E5662492092CEE300CA362F /* timg.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = timg.jpeg; sourceTree = "<group>"; };
+		7E7C520C2456C270001DD51A /* JJSegmentPageView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JJSegmentPageView.h; sourceTree = "<group>"; };
+		7E7C520D2456C270001DD51A /* JJSegmentPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JJSegmentPageView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +154,6 @@
 		7E5661E72092C73800CA362F /* JJSegmentPager */ = {
 			isa = PBXGroup;
 			children = (
-				7E56621A2092C7AF00CA362F /* Image */,
 				7E56621B2092C7B000CA362F /* JJSegmentPager */,
 				7E5661E82092C73800CA362F /* AppDelegate.h */,
 				7E5661E92092C73900CA362F /* AppDelegate.m */,
@@ -163,8 +161,8 @@
 				7E5661EC2092C73900CA362F /* ViewController.m */,
 				7E56622F2092CB9900CA362F /* JJBaseUsedViewController.h */,
 				7E5662302092CB9900CA362F /* JJBaseUsedViewController.m */,
-				7E5662322092CBB200CA362F /* JJDefaultHeaderViewController.h */,
-				7E5662332092CBB200CA362F /* JJDefaultHeaderViewController.m */,
+				7E207C0824595D5000CE6562 /* JJChangeBarStyleViewController.h */,
+				7E207C0924595D5000CE6562 /* JJChangeBarStyleViewController.m */,
 				7E5662352092CBC800CA362F /* JJCustomHeaderViewController.h */,
 				7E5662362092CBC800CA362F /* JJCustomHeaderViewController.m */,
 				7E5662382092CBDE00CA362F /* JJCustomBarViewController.h */,
@@ -173,11 +171,12 @@
 				7E2C86FB209FF64100C24E3F /* JJCustomFooterViewController.m */,
 				7E56623B2092CBF600CA362F /* JJTableViewController.h */,
 				7E56623C2092CBF600CA362F /* JJTableViewController.m */,
+				7E207C0324594E8800CE6562 /* JJNavigationView.h */,
+				7E207C0424594E8800CE6562 /* JJNavigationView.m */,
+				7E207C062459531100CE6562 /* JJNavigationView.xib */,
 				7E5662432092CEB100CA362F /* JJCustomHeader.h */,
 				7E5662442092CEB100CA362F /* JJCustomHeader.m */,
 				7E5662462092CEC600CA362F /* JJCustomHeader.xib */,
-				7E56623E2092CC5B00CA362F /* UINavigationBar+JJAwesome.h */,
-				7E56623F2092CC5B00CA362F /* UINavigationBar+JJAwesome.m */,
 				7E5661EE2092C73900CA362F /* Main.storyboard */,
 				7E5662482092CEE300CA362F /* timg (1).jpeg */,
 				7E5662492092CEE300CA362F /* timg.jpeg */,
@@ -207,31 +206,23 @@
 			path = JJSegmentPagerUITests;
 			sourceTree = "<group>";
 		};
-		7E56621A2092C7AF00CA362F /* Image */ = {
-			isa = PBXGroup;
-			children = (
-				7E56621D2092C7BB00CA362F /* ezgif.com-optimize-1.gif */,
-				7E56621C2092C7BB00CA362F /* ezgif.com-optimize.gif */,
-			);
-			path = Image;
-			sourceTree = "<group>";
-		};
 		7E56621B2092C7B000CA362F /* JJSegmentPager */ = {
 			isa = PBXGroup;
 			children = (
-				7E5662412092CE3C00CA362F /* 20140306110441515.jpg */,
 				7E56622C2092CA1600CA362F /* JJSegmentPager.h */,
 				7E56622D2092CA1600CA362F /* JJSegmentPager.m */,
+				7E1F30812452F6BF009D6198 /* JJSegmentTableView.h */,
+				7E1F30822452F6BF009D6198 /* JJSegmentTableView.m */,
+				7E7C520C2456C270001DD51A /* JJSegmentPageView.h */,
+				7E7C520D2456C270001DD51A /* JJSegmentPageView.m */,
 				7E5662292092C8F200CA362F /* JJSegmentBar.h */,
 				7E56622A2092C8F200CA362F /* JJSegmentBar.m */,
 				7E5662262092C87600CA362F /* JJSegmentBtn.h */,
 				7E5662272092C87600CA362F /* JJSegmentBtn.m */,
-				7E5662232092C83A00CA362F /* JJSegmentHeader.h */,
-				7E5662242092C83A00CA362F /* JJSegmentHeader.m */,
 				7E5662202092C80100CA362F /* JJSegmentScrollView.h */,
 				7E5662212092C80100CA362F /* JJSegmentScrollView.m */,
-				7E147A67225C365A0061C7F6 /* UIScrollView+JJRuntime.h */,
-				7E147A68225C365A0061C7F6 /* UIScrollView+JJRuntime.m */,
+				7E207C002459486700CE6562 /* UIScrollView+JJExchange.h */,
+				7E207C012459486700CE6562 /* UIScrollView+JJExchange.m */,
 			);
 			path = JJSegmentPager;
 			sourceTree = "<group>";
@@ -344,14 +335,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E5662472092CEC600CA362F /* JJCustomHeader.xib in Resources */,
-				7E5662422092CE3C00CA362F /* 20140306110441515.jpg in Resources */,
-				7E56621F2092C7BB00CA362F /* ezgif.com-optimize-1.gif in Resources */,
 				7E5661F52092C73900CA362F /* LaunchScreen.storyboard in Resources */,
 				7E56624A2092CEE300CA362F /* timg (1).jpeg in Resources */,
 				7E5661F22092C73900CA362F /* Assets.xcassets in Resources */,
-				7E56621E2092C7BB00CA362F /* ezgif.com-optimize.gif in Resources */,
 				7E5661F02092C73900CA362F /* Main.storyboard in Resources */,
 				7E56624B2092CEE300CA362F /* timg.jpeg in Resources */,
+				7E207C072459531100CE6562 /* JJNavigationView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,21 +367,22 @@
 			files = (
 				7E5661ED2092C73900CA362F /* ViewController.m in Sources */,
 				7E56622E2092CA1600CA362F /* JJSegmentPager.m in Sources */,
+				7E207C0A24595D5000CE6562 /* JJChangeBarStyleViewController.m in Sources */,
 				7E5662372092CBC800CA362F /* JJCustomHeaderViewController.m in Sources */,
 				7E5662222092C80100CA362F /* JJSegmentScrollView.m in Sources */,
 				7E5662312092CB9900CA362F /* JJBaseUsedViewController.m in Sources */,
-				7E5662402092CC5B00CA362F /* UINavigationBar+JJAwesome.m in Sources */,
 				7E2C86FC209FF64100C24E3F /* JJCustomFooterViewController.m in Sources */,
+				7E1F30832452F6BF009D6198 /* JJSegmentTableView.m in Sources */,
 				7E5661F82092C73900CA362F /* main.m in Sources */,
 				7E5662452092CEB100CA362F /* JJCustomHeader.m in Sources */,
+				7E207C022459486700CE6562 /* UIScrollView+JJExchange.m in Sources */,
 				7E5661EA2092C73900CA362F /* AppDelegate.m in Sources */,
 				7E5662282092C87600CA362F /* JJSegmentBtn.m in Sources */,
-				7E147A69225C365A0061C7F6 /* UIScrollView+JJRuntime.m in Sources */,
 				7E56622B2092C8F200CA362F /* JJSegmentBar.m in Sources */,
 				7E56623A2092CBDE00CA362F /* JJCustomBarViewController.m in Sources */,
-				7E5662252092C83A00CA362F /* JJSegmentHeader.m in Sources */,
-				7E5662342092CBB200CA362F /* JJDefaultHeaderViewController.m in Sources */,
+				7E7C520E2456C270001DD51A /* JJSegmentPageView.m in Sources */,
 				7E56623D2092CBF600CA362F /* JJTableViewController.m in Sources */,
+				7E207C0524594E8800CE6562 /* JJNavigationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -560,6 +550,7 @@
 				INFOPLIST_FILE = JJSegmentPager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Lance.JJSegmentPager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -575,6 +566,7 @@
 				INFOPLIST_FILE = JJSegmentPager/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 2.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Lance.JJSegmentPager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;

@@ -2,15 +2,12 @@
 //  JJSegmentPager.h
 //  JJSegmentPager
 //
-//  Created by Lance on 2018/4/27.
-//  Copyright © 2018年 Lance. All rights reserved.
-//
+//  Created by Lance on 2020/4/29.
+//  Copyright © 2020 Lance. All rights reserved.
+//  Version:2.0.0
 
 #import <UIKit/UIKit.h>
-
-#define iPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? (CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(1242, 2688), [[UIScreen mainScreen] currentMode].size) || CGSizeEqualToSize(CGSizeMake(828, 1792), [[UIScreen mainScreen] currentMode].size)) : NO)
-
-#define kNavHeight (iPhoneX ? 88 : 64)
+#import "JJSegmentTableView.h"
 
 /**
  Description 标签按钮底部指示器宽度类型
@@ -19,245 +16,159 @@
  - JJBarIndicatorAutoWidthType: 自动适应文字宽度类型
  */
 typedef NS_ENUM(NSUInteger, JJBarIndicatorType) {
-    
+
     JJBarIndicatorSameWidthType,
     JJBarIndicatorAutoWidthType
-    
 };
 
 /**
  Description 标签按钮宽度类型
  
- - JJBarSegmentBtnSameWidthType: 等宽类型（默认）
  - JJBarSegmentBtnAutoWidthType1: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮均分)
  - JJBarSegmentBtnAutoWidthType2: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮从左侧依次布局)
  */
 typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
     
-    JJBarSegmentBtnSameWidthType,
     JJBarSegmentBtnAutoWidthType1,
     JJBarSegmentBtnAutoWidthType2,
 };
 
-/**
- Description 表头随着偏移量改变的类型
-
- - JJHeaderViewSizeChangeType: 随着偏移量，尺寸改变（position.x与position.y保持不变，size改变）（默认）
- - JJHeaderViewPositionChangeType: 随着便宜量，位置改变（size.height与size.width保持不变，position改变）
- */
-typedef NS_ENUM(NSUInteger, JJHeaderViewChangeType) {
-    
-    JJHeaderViewSizeChangeType,
-    JJHeaderViewPositionChangeType
-};
-
-
 @protocol JJSegmentDelegate <NSObject>
 
-/**
- Description
- 
- @return 获取当前控制器的ScrollView
- */
-- (UIScrollView *)streachScrollView;
+@optional
+
+- (UIScrollView *)jj_segment_obtainScrollView;//获取当前控制器的ScrollView，添加的分页子控制器一定要实现此代理
+
+- (void)jj_segment_scrollViewDidVerticalScroll:(UIScrollView *)scrollView;//mainTableView纵向滑动回调，返回偏移量，用于实现导航栏渐变等动画
+- (void)jj_segment_scrollViewDidHorizontalScroll:(UIScrollView *)scrollView;//pageView横向滑动回调
+- (void)jj_segment_scrollViewDidEndDecelerating:(NSInteger)index;//pageView滑动结束回调，返回当前位置，用于更新第三方标签按钮的点击位置
+- (void)jj_segment_buttonDidSelected:(NSInteger)index;//pageView横向滑动回调，返回偏移量，可以更新s第三方按钮的切换动画
+
 
 @end
 
-
-
 @interface JJSegmentPager : UIViewController
 
-/**
- Description 标签按钮底部指示器宽度类型设置 （默认等宽）
- */
+@property (nonatomic, weak) id<JJSegmentDelegate> delegate;
+
+/// Description 标签按钮点击位置回调
+@property (nonatomic, copy) void(^jj_segment_buttonDidSelectedBlock)(NSInteger index);
+
+/// Description pageView滑动结束回调，返回当前位置，用于更新第三方标签按钮的点击位置
+@property (nonatomic, copy) void(^jj_segment_scrollViewDidEndDeceleratingBlock)(NSInteger index);
+
+/// Description pageView横向滑动回调，返回偏移量，可以更新s第三方按钮的切换动画
+@property (nonatomic, copy) void(^jj_segment_scrollViewDidHorizontalScrollBlock)(UIScrollView *scrollView);
+
+/// Description mainTableView纵向滑动回调，返回偏移量，用于实现导航栏渐变等动画
+@property (nonatomic, copy) void(^jj_segment_scrollViewDidVerticalScrollBlock)(UIScrollView *scrollView);
+
+/// Description  主列表
+@property (nonatomic, strong) JJSegmentTableView *mainTableView;
+
+/// 标签按钮底部指示器宽度类型设置 （默认等宽）
 @property (nonatomic, assign) JJBarIndicatorType barIndicatorType;
 
-/**
- Description 标签按钮的宽度设置（默认等宽）
- */
+/// Description 标签按钮的宽度设置（默认JJBarSegmentBtnAutoWidthType1）
 @property (nonatomic, assign) JJBarSegmentBtnWidthType barSegmentBtnWidthType;
 
-/**
- Description 表头随着偏移量改变的类型（默认改变尺寸，位置不变）
- */
-@property (nonatomic, assign) JJHeaderViewChangeType headerViewChangeType;
+/// Description 控件尺寸（默认父类空间尺寸，建议初始化时设置尺寸）
+@property (nonatomic, assign) CGRect frame;
 
-/**
- Description 当前子控制器
- */
-@property (nonatomic, weak) UIViewController<JJSegmentDelegate> *currentDisplayController;
-
-/**
- Description 子控制器(需要设置title)
- */
+/// Description 子控制器(需要设置title)
 @property (nonatomic, strong) NSArray *subControllers;
 
-/**
- Description 按钮高亮背景色（默认透明）
- */
+/// Description 按钮高亮背景色（默认透明）
 @property (nonatomic, strong) UIColor *barHighlightBackgroundColor;
 
-/**
- Description bar的背景色（默认白色）
- */
+/// Description bar的背景色（默认白色）
 @property (nonatomic, strong) UIColor *barBackgroundColor;
 
-/**
- Description 标题正常颜色（默认黑色）
- */
+/// Description 标题正常颜色（默认黑色）
 @property (nonatomic, strong) UIColor *barNormalColor;
 
-/**
- Description 标题点击颜色（默认蓝色）
- */
+/// Description 标题点击颜色（默认蓝色）
 @property (nonatomic, strong) UIColor *barSelectColor;
 
-/**
- Description 底部指示器颜色（默认标题点击颜色）
- */
+/// Description 底部指示器颜色（默认标题点击颜色）
 @property (nonatomic, strong) UIColor *barIndicatorColor;
 
-/**
- Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
- */
+/// Description segmentBar底部线条颜色（注：适用自定义标签按钮）
+@property (nonatomic, strong) UIColor *barLineColor;
+
+/// Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
 @property (nonatomic, strong) UIFont *barNormalFont;
 
-/**
- Description 标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
- */
+/// Description 标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
 @property (nonatomic, strong) UIFont *barSelectFont;
 
-
-/**
- Description 底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
- */
+/// Description 底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
 @property (nonatomic, assign) CGFloat barIndicatorHeight;
 
-/**
- Description 底部指示器宽度（当 JJBarIndicatorType == JJBarIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
- */
+/// Description 底部指示器宽度（当 JJBarIndicatorType == JJBarIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
 @property (nonatomic, assign) CGFloat barIndicatorWidth;
 
-/**
- Description 底部指示器圆角（默认0）
- */
+/// Description 底部指示器圆角（默认0）
 @property (nonatomic, assign) CGFloat barIndicatorCornerRadius;
 
-/**
- Description segmentBar的内边距（默认UIEdgeInsetsZero）
- */
+/// Description segmentBar的内边距（默认UIEdgeInsetsZero，注：适用自定义标签按钮）
 @property (nonatomic, assign) UIEdgeInsets barContentInset;
 
-/**
- Description 初始化按钮显示位置（默认0）
- */
+/// Description 初始化按钮显示位置（默认0）
 @property (nonatomic, assign) NSInteger currentPage;
 
-/**
- Description segmentBar高度（默认44）
- */
-@property (nonatomic, assign) CGFloat segmentHeight;
+/// Description segmentBar高度（默认44）
+@property (nonatomic, assign) CGFloat barHeight;
 
-/**
- Description segmentBar顶端距离控制器的最小边距（也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端）注:segmentMiniTopInset不可超过headerHeight
- */
+/// Description segmentBar顶端距离控制器的最小边距（也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端）注：segmentMiniTopInset不可超过headerHeight
 @property (nonatomic, assign) CGFloat segmentMiniTopInset;
 
-/**
- Description 表头高度（默认0）
- */
+/// Description 表头高度（默认0, 当headerHeight=segmentMiniTopInset时，表头固定不动）
 @property (nonatomic, assign) CGFloat headerHeight;
 
-/**
- Description 表尾高度（默认0）
- */
+/// Description 表尾高度（默认0）
 @property (nonatomic, assign) CGFloat footerHeight;
 
-/**
- Description 自定义表头
- */
+/// Description 自定义表头
 @property (nonatomic, strong) UIView *customHeaderView;
 
-/**
- Description 自定义表尾
- */
+/// Description 自定义表尾
 @property (nonatomic, strong) UIView *customFooterView;
 
-/**
- Description 自定义标签按钮
- */
+/// Description 自定义标签按钮
 @property (nonatomic, strong) UIView *customBarView;
 
-/**
- Description 允许列表下拉时,表头可以扩展到最大高度（默认不允许NO）
- */
-@property (nonatomic, assign) BOOL enableMaxHeaderHeight;
+/// Description 允许标签按钮吸顶时可以滚动（默认允许YES）
+@property (nonatomic, assign) BOOL enableSegmentBarCeilingScroll;
 
-/**
- Description 允许列表滑动时,同时改变表头偏移量（默认不允许NO）
- */
-@property (nonatomic, assign) BOOL enableOffsetChanged;
+/// Description 允许主列表下拉刷新（默认不允许NO）
+@property (nonatomic, assign) BOOL enableMainRefreshScroll;
 
-/**
- Description 允许页面可以左右滑动切换（默认不允许NO）
- */
-@property (nonatomic, assign) BOOL enableScrollViewDrag;
+/// Description 允许页面可以左右横向滑动切换（默认不允许NO）
+@property (nonatomic, assign) BOOL enablePageHorizontalScroll;
 
-/**
- Description 设置segmentBar是否带阴影效果（默认不带NO）
- */
+/// Description 设置segmentBar是否带阴影效果（默认不带NO， 注：适用自定义标签按钮）
 @property (nonatomic, assign) BOOL needShadow;
 
-/**
- Description 设置segmentBar是否带底部线条效果（默认不带NO）
- */
+/// Description 设置segmentBar是否带底部线条效果（默认不带NO， 注：适用自定义标签按钮）
 @property (nonatomic, assign) BOOL needLine;
 
-/**
- Description 添加父控制器
- 
- @param viewController 控制器
- */
+/// Description 添加父控制器
+/// @param viewController 控制器
 - (void)addParentController:(UIViewController *)viewController;
 
-/**
- Description 按钮点击方法
- 
- @param index 当前点击位置
- */
-- (void)segmentDidSelectedValue:(NSInteger)index;
+/// Description 切换pageView
+/// @param index 当前位置
+- (void)switchPageViewWithIndex:(NSInteger)index;
 
-/**
- Description 列表滑动过程中偏移量数值回调（当自定义表头时,回调此偏移量,以供外界自定义表头使用）
- 
- @param block block description
- */
-- (void)updateSegmentTopInsetBlock:(void(^)(CGFloat top))block;
+/// Description 滚动到原点
+- (void)scrollToOriginalPoint;
 
-/**
- Description 按钮点击回调
- 
- @param block 按钮索引
- */
-- (void)selectedSegmentBarBlock:(void(^)(NSInteger index))block;
+/// Description 滚动到吸顶点
+- (void)scrollToCeilingPoint;
 
-/**
- Description scrollViewDidEndDecelerating代理回调
- 
- @param block 当前页面位置
- */
-- (void)scrollViewDidEndDeceleratingBlock:(void(^)(NSInteger currentPage))block;
-
-/**
- Description 重新布局界面
- */
-- (void)reloadViews;
-
-/**
- Description 更新表头高度
- 
- @param height 高度
- */
+/// Description 更新表头高度
+/// @param height 高度
 - (void)updateHeaderHeight:(CGFloat)height;
 
 @end

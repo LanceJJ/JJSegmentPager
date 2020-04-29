@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "JJBaseUsedViewController.h"
-#import "JJDefaultHeaderViewController.h"
+#import "JJChangeBarStyleViewController.h"
 #import "JJCustomHeaderViewController.h"
 #import "JJCustomBarViewController.h"
 #import "JJCustomFooterViewController.h"
@@ -30,12 +30,12 @@
     self.title = @"JJSegmentPager";
     
     self.viewControllers = @[NSStringFromClass([JJBaseUsedViewController class]),
-                             NSStringFromClass([JJDefaultHeaderViewController class]),
+                             NSStringFromClass([JJChangeBarStyleViewController class]),
                              NSStringFromClass([JJCustomHeaderViewController class]),
                              NSStringFromClass([JJCustomBarViewController class]),
                              NSStringFromClass([JJCustomFooterViewController class])
                              ];
-    self.titleArray = @[@"最基本用法", @"默认表头", @"自定义表头", @"自定义标签按钮", @"自定义表尾"];
+    self.titleArray = @[@"基础用法", @"自带标签按钮样式设置", @"自定义表头", @"自定义表头+标签按钮", @"自定义表头+标签按钮+表尾"];
     
     self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
     self.tableView.delegate = self;
@@ -72,6 +72,7 @@
     vc.title = self.titleArray[indexPath.row];
     [self.navigationController pushViewController:vc animated:YES];
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

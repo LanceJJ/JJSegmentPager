@@ -29,19 +29,22 @@
     } else {
         self.dataCount = 100;
     }
+    
+    NSLog(@"-----%f", self.view.frame.size.height);
+    
 
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.rowHeight = 60;
+    self.view.backgroundColor = [UIColor lightGrayColor];
     [self.view addSubview:_tableView];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"cell"];
-    
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [self.tableView reloadData];
-//    });
-    
 
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSLog(@"-----%f", self.view.frame.size.height);
+        self.tableView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    });
 }
 
 #pragma mark - UITableViewDataSource
@@ -60,7 +63,7 @@
     return cell;
 }
 
-- (UIScrollView *)streachScrollView
+- (UIScrollView *)jj_segment_obtainScrollView
 {
     return self.tableView;
 }

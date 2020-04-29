@@ -10,15 +10,13 @@
 #import "JJCustomHeader.h"
 #import "JJTableViewController.h"
 #import "JJSegmentPager.h"
-#import "UINavigationBar+JJAwesome.h"
-
-#define NAVBAR_CHANGE_POINT 50
-#define HEADER_HEIGHT 240
+#import "JJNavigationView.h"
 
 @interface JJCustomHeaderViewController ()
 
+@property (nonatomic, strong) JJSegmentPager *pager;
+@property (nonatomic, strong) JJNavigationView *navView;
 @property (nonatomic, assign) NSInteger offsetY;
-@property (nonatomic, strong) UIImageView *imageView;
 
 @end
 
@@ -26,42 +24,41 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
-    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
-    [self.navigationController.navigationBar jj_setBackgroundColor:[UIColor clearColor]];
-    [self updateNavigationBarWithOffsetY:0];
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.navigationController.navigationBar jj_reset];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    UIImageView *imageView = [[UIImageView alloc] init];
-    
-    UIView *topBkView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    topBkView.backgroundColor = [UIColor clearColor];
-    imageView.frame = CGRectMake(0, 0, 40, 40);
-    imageView.image = [UIImage imageNamed:@"timg (1).jpeg"];
-    [topBkView addSubview:imageView];
-    self.imageView = imageView;
-    self.navigationItem.titleView = topBkView;
-    imageView.alpha = 0;
-    
     [self setupSegmentPager];
+    
+    JJNavigationView *navView = [[[NSBundle mainBundle] loadNibNamed:@"JJNavigationView" owner:self options:nil] lastObject];
+    navView.frame = CGRectMake(0, 0, self.view.frame.size.width, kNavHeight);
+    navView.backgroundColor = [UIColor colorWithWhite:1 alpha:0];
+    navView.title = self.title;
+    [self.view addSubview:navView];
+    self.navView = navView;
+    
+    __weak typeof(self) vc = self;
+    navView.backBlock = ^{
+        [vc.navigationController popViewControllerAnimated:YES];
+    };
+    
 }
 
 - (void)setupSegmentPager
 {
     //自定义表头
     JJCustomHeader *headerView = [[[NSBundle mainBundle] loadNibNamed:@"JJCustomHeader" owner:self options:nil] lastObject];
-    
-//    headerView.userInteractionEnabled = NO;
 
     //第一个
     JJTableViewController *one = [[JJTableViewController alloc] init];
@@ -83,50 +80,22 @@
     
     pager.segmentMiniTopInset = kNavHeight;//segmentBar顶端距离控制器的最小边距，也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端
     pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
-    pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
-    pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
-    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
-    pager.needShadow = YES;//设置segmentBar阴影
+    pager.enableMainRefreshScroll = YES;//允许主列表下拉刷新（默认不允许NO）
+    pager.enablePageHorizontalScroll = YES;//允许页面可以左右滑动切换，默认不允许NO
+//    pager.enableSegmentBarCeilingScroll = NO;//允许标签按钮吸顶时可以滚动（默认允许YES）
     pager.customHeaderView = headerView;//自定义表头
     [pager addParentController:self];
     
+    self.pager = pager;
     
     __weak typeof(self) vc = self;
-    //列表滑动过程中偏移量数值回调 返回bar到控制器顶端的距离
-    [pager updateSegmentTopInsetBlock:^(CGFloat top) {
+    pager.jj_segment_scrollViewDidVerticalScrollBlock = ^(UIScrollView *scrollView) {
+        NSLog(@"=====================%f", scrollView.contentOffset.y);
         
-        //更新NavigationBar背景颜色
-        [vc updateNavigationBarWithOffsetY:HEADER_HEIGHT - top];
+        vc.navView.backgroundColor = [UIColor colorWithWhite:1 alpha:scrollView.contentOffset.y / (HEADER_HEIGHT - kNavHeight)];
         
-        //更新自定义表头控件
-        [headerView updateHeaderImageWithOffsetY:top];
-        
-        vc.offsetY = top;
-        
-        NSLog(@"%f", top);
-        
-    }];
-    
+    };
 }
-
-
-- (void)updateNavigationBarWithOffsetY:(CGFloat)offsetY
-{
-    UIColor * color = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:0/255.0 alpha:1];
-    if (offsetY > NAVBAR_CHANGE_POINT) {
-        CGFloat alpha = MIN(1, 1 - ((NAVBAR_CHANGE_POINT + kNavHeight - offsetY) / kNavHeight));
-        [self.navigationController.navigationBar jj_setBackgroundColor:[color colorWithAlphaComponent:alpha]];
-    } else {
-        [self.navigationController.navigationBar jj_setBackgroundColor:[color colorWithAlphaComponent:0]];
-    }
-
-    if (offsetY >= 136) {
-        self.imageView.alpha = 1;
-    } else {
-        self.imageView.alpha = 0;
-    }
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

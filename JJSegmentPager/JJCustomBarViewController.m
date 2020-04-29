@@ -9,15 +9,15 @@
 #import "JJCustomBarViewController.h"
 #import "JJTableViewController.h"
 #import "JJSegmentPager.h"
-#import "UINavigationBar+JJAwesome.h"
+#import "JJCustomHeader.h"
+#import "JJNavigationView.h"
 
-#define NAVBAR_CHANGE_POINT 50
-#define HEADER_HEIGHT 240
 
-@interface JJCustomBarViewController ()
+@interface JJCustomBarViewController () <JJSegmentDelegate>
 
+@property (nonatomic, strong) JJNavigationView *navView;
 @property (nonatomic, strong) JJSegmentPager *pager;
-@property (nonatomic, assign) NSInteger offsetY;
+@property (nonatomic, strong) UISegmentedControl *segmentControl;
 
 @end
 
@@ -25,16 +25,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:YES];
-    [self.navigationController.navigationBar setShadowImage:[UIImage new]];
-    [self.navigationController.navigationBar jj_setBackgroundColor:[UIColor clearColor]];
-    [self updateNavigationBarWithOffsetY:0];
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self.navigationController.navigationBar jj_reset];
+    [self.navigationController setNavigationBarHidden:NO animated:animated];
 }
 
 - (void)viewDidLoad {
@@ -42,14 +41,30 @@
     // Do any additional setup after loading the view.
     
     [self setupSegmentPager];
+    
+    JJNavigationView *navView = [[[NSBundle mainBundle] loadNibNamed:@"JJNavigationView" owner:self options:nil] lastObject];
+    navView.frame = CGRectMake(0, 0, self.view.frame.size.width, kNavHeight);
+    navView.backgroundColor = [UIColor colorWithWhite:1 alpha:0];
+    navView.title = self.title;
+    [self.view addSubview:navView];
+    self.navView = navView;
+    
+    __weak typeof(self) vc = self;
+    navView.backBlock = ^{
+        [vc.navigationController popViewControllerAnimated:YES];
+    };
 }
 
 - (void)setupSegmentPager
 {
+    //自定义表头
+    JJCustomHeader *headerView = [[[NSBundle mainBundle] loadNibNamed:@"JJCustomHeader" owner:self options:nil] lastObject];
+    
     //自定义标签按钮
     NSArray *segmentedArray = @[@"第一个", @"第二个", @"第三个"];
     UISegmentedControl *segmentControl = [[UISegmentedControl alloc] initWithItems:segmentedArray];
     
+    self.segmentControl = segmentControl;
     segmentControl.selectedSegmentIndex = 0;
     [segmentControl
      addTarget:self
@@ -74,42 +89,35 @@
     //参数设置
     pager.subControllers = @[one, two, three];
     
+    pager.delegate = self;
     pager.segmentMiniTopInset = kNavHeight;//segmentBar顶端距离控制器的最小边距，也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端
     pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
+    pager.barHeight = 44;//segmentBar高度（默认44）
     pager.currentPage = segmentControl.selectedSegmentIndex;
-    pager.enableOffsetChanged = YES;//允许列表滑动时,同时改变表头偏移量，默认不允许NO
-    pager.enableMaxHeaderHeight = YES;//允许列表下拉时,表头可以扩展到最大高度，默认不允许NO
-    pager.enableScrollViewDrag = YES;//允许页面可以左右滑动切换，默认不允许NO
-    pager.needShadow = YES;//设置segmentBar阴影
+    pager.enableMainRefreshScroll = YES;//允许主列表下拉刷新，默认不允许NO
+    pager.enablePageHorizontalScroll = YES;//允许页面可以左右滑动切换，默认不允许NO
+//    pager.enableSegmentBarCeilingScroll = NO;//允许标签按钮吸顶时可以滚动（默认允许YES）
     pager.customBarView = segmentControl;//自定义标签按钮
-    pager.enableScrollViewDrag = YES;
+    pager.customHeaderView = headerView;//自定义表头
     [pager addParentController:self];
     self.pager = pager;
     
-    
-    __weak typeof(self) vc = self;
-    //列表滑动过程中偏移量数值回调 返回bar到控制器顶端的距离
-    [pager updateSegmentTopInsetBlock:^(CGFloat top) {
-        
-        //更新NavigationBar背景颜色
-        [vc updateNavigationBarWithOffsetY:HEADER_HEIGHT - top];
-        
-        vc.offsetY = top;
-        
-        NSLog(@"%f", top);
-    }];
-    
-    //scrollViewDidEndDecelerating代理回调 更改自定义标签按钮索引
-    [pager scrollViewDidEndDeceleratingBlock:^(NSInteger currentPage) {
-        
-        segmentControl.selectedSegmentIndex = currentPage;
-        
-    }];
-    
+}
+
+#pragma mark JJSegmentDelegate
+
+- (void)jj_segment_scrollViewDidEndDecelerating:(NSInteger)index
+{
+    self.segmentControl.selectedSegmentIndex = index;
+}
+
+- (void)jj_segment_scrollViewDidVerticalScroll:(UIScrollView *)scrollView
+{
+    self.navView.backgroundColor = [UIColor colorWithWhite:1 alpha:scrollView.contentOffset.y / (HEADER_HEIGHT - kNavHeight)];
 }
 
 /**
- Description 标签按钮点击事件
+ escription 标签按钮点击事件
  
  @param sender 点击位置
  */
@@ -117,19 +125,8 @@
 {
     NSInteger Index = sender.selectedSegmentIndex;
     //更换当前界面
-    [self.pager segmentDidSelectedValue:Index];
+    [self.pager switchPageViewWithIndex:Index];
     
-}
-
-- (void)updateNavigationBarWithOffsetY:(CGFloat)offsetY
-{
-    UIColor * color = [UIColor colorWithRed:240/255.0 green:240/255.0 blue:0/255.0 alpha:1];
-    if (offsetY > NAVBAR_CHANGE_POINT) {
-        CGFloat alpha = MIN(1, 1 - ((NAVBAR_CHANGE_POINT + kNavHeight - offsetY) / kNavHeight));
-        [self.navigationController.navigationBar jj_setBackgroundColor:[color colorWithAlphaComponent:alpha]];
-    } else {
-        [self.navigationController.navigationBar jj_setBackgroundColor:[color colorWithAlphaComponent:0]];
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -138,13 +135,14 @@
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
+

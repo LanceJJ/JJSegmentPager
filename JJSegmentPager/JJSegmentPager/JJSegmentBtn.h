@@ -2,47 +2,35 @@
 //  JJSegmentBtn.h
 //  JJSegmentPager
 //
-//  Created by Lance on 2018/4/27.
-//  Copyright © 2018年 Lance. All rights reserved.
+//  Created by Lance on 2020/4/29.
+//  Copyright © 2020 Lance. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 
 @interface JJSegmentBtn : UIButton
 
-/**
- Description 点击状态
- */
-@property (nonatomic, assign) BOOL hasSelected;
+/// Description 点击状态
+@property (nonatomic, assign) BOOL isSelect;
 
-/**
- Description 按钮高亮背景色（默认透明）
- */
+/// Description 按钮高亮背景色（默认透明）
 @property (nonatomic, strong) UIColor *highlightColor;
 
-/**
- Description 初始化
- 
- @param title 标题
- @return HTSegmentBtn
- */
+/// Description 标题点击颜色（默认蓝色）
+@property (nonatomic, strong) UIColor *selectColor;
+
+/// Description 标题正常颜色（默认黑色）
+@property (nonatomic, strong) UIColor *normalColor;
+
+/// Description 标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
+@property (nonatomic, strong) UIFont *selectFont;
+
+/// Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
+@property (nonatomic, strong) UIFont *normalFont;
+
+/// Description 初始化
+/// @param title 标题
 - (instancetype)initWithTitle:(NSString *)title;
 
-/**
- Description 设置颜色
- 
- @param normalColor 标题正常颜色（默认黑色）
- @param selectColor 标题点击颜色（默认蓝色）
- */
-- (void)setTitleNormalColor:(UIColor *)normalColor selectColor:(UIColor *)selectColor;
-
-
-/**
- Description 设置字体尺寸
-
- @param normalFont 标题正常尺寸
- @param selectFont 标题点击尺寸
- */
-- (void)setTitleNormalFont:(UIFont *)normalFont selectFont:(UIFont *)selectFont;
 
 @end
