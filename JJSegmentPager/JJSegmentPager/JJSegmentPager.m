@@ -58,9 +58,6 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.view.frame = self.frame;
-    NSLog(@"%f", self.view.frame.size.height);
-    
     if (self.subControllers.count == 0 || self.subControllers == nil) return;
     
     self.currentPage = (self.currentPage > self.subControllers.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
@@ -112,14 +109,14 @@
     [self.view addSubview:self.customFooterView];
     self.customFooterView.clipsToBounds = YES;
     
-    self.customFooterView.frame = CGRectMake(0, self.view.frame.size.height - self.footerHeight, self.view.frame.size.width, self.footerHeight);
+    self.customFooterView.frame = CGRectMake(0, self.frame.size.height - self.footerHeight, self.view.frame.size.width, self.footerHeight);
 
 }
 
 /// Description 初始化标签按钮承载界面
 - (UIView *)setupSegmentView
 {
-    UIView *segmentBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.barHeight)];
+    UIView *segmentBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.barHeight)];
     segmentBarView.backgroundColor = [UIColor whiteColor];
     [segmentBarView addSubview:[self setupSegmentBar]];
     
@@ -144,7 +141,7 @@
 /// Description 初始化JJSegmentPageView
 - (UIView *)setupPageView
 {
-    JJSegmentPageView *pageView = [[JJSegmentPageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.segmentMiniTopInset - self.barHeight - self.footerHeight)];
+    JJSegmentPageView *pageView = [[JJSegmentPageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.frame.size.height - self.segmentMiniTopInset - self.barHeight - self.footerHeight)];
     pageView.delegate = self;
     pageView.scrollView.scrollEnabled = self.enablePageHorizontalScroll;
     [pageView setSubControllers:self.subControllers currentPage:self.currentPage];
@@ -205,7 +202,7 @@
 
 - (void)setupTableView
 {
-    JJSegmentTableView *mainTableView = [[JJSegmentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.footerHeight) style:UITableViewStyleGrouped];
+    JJSegmentTableView *mainTableView = [[JJSegmentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.frame.size.height - self.footerHeight) style:UITableViewStyleGrouped];
     mainTableView.delegate = self;
     mainTableView.dataSource = self;
     mainTableView.sectionHeaderHeight = 0.01;
@@ -254,7 +251,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return self.view.frame.size.height - self.segmentMiniTopInset - self.barHeight - self.footerHeight;
+    return self.frame.size.height - self.segmentMiniTopInset - self.barHeight - self.footerHeight;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -446,7 +443,6 @@
     return CGRectMake(0 + left, 0 + top, self.view.frame.size.width - left - right, self.barHeight - top - bottom);
 }
 
-
 #pragma mark - public methods
 
 /// Description 添加父控制器
@@ -458,6 +454,10 @@
     viewController.automaticallyAdjustsScrollViewInsets = NO;
     [viewController.view addSubview:self.view];
     [viewController addChildViewController:self];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.view.frame = self.frame;
+    });
 }
 
 /// Description 切换pageView

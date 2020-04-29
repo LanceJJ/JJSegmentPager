@@ -81,7 +81,7 @@
     self.currentPage = index;
     
     UIViewController<JJSegmentDelegate> *pageController = self.subControllers[index];
-  
+    
     UIView *pageView = pageController.view;
     
     //如果已经存在，就不再添加
@@ -92,6 +92,9 @@
         pageView.frame = CGRectMake(self.currentPage * self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
         
         [self.scrollView insertSubview:pageView atIndex:0];
+        
+        JJSegmentPager *pager = (JJSegmentPager *)[self getCurrentViewController];
+        [pager addChildViewController:pageController];
         
         NSLog(@"添加了：%@", pageController.title);
     
@@ -116,6 +119,20 @@
             };
         }
     });
+}
+
+/// Description 获取当前view所在的viewController
+- (UIViewController *)getCurrentViewController
+{
+    //获取当前view的superView对应的控制器
+    UIResponder *next = [self nextResponder];
+    do {
+        if ([next isKindOfClass:[UIViewController class]]) {
+            return (UIViewController *)next;
+        }
+        next = [next nextResponder];
+    } while (next != nil);
+    return nil;
 }
 
 - (void)scrollViewContentOffset:(UIScrollView *)scrollView

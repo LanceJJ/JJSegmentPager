@@ -4,7 +4,7 @@
 //
 //  Created by Lance on 2020/4/29.
 //  Copyright © 2020 Lance. All rights reserved.
-//  Version:2.0.0
+//  Version:2.0.1
 
 #import <UIKit/UIKit.h>
 #import "JJSegmentTableView.h"

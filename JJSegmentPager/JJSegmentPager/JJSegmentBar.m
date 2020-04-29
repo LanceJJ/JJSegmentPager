@@ -88,7 +88,7 @@
         
         button.normalColor = self.normalColor;
         button.selectColor = self.selectColor;
-        button.normalFont = self.selectFont;
+        button.normalFont = self.normalFont;
         button.selectFont = self.selectFont;
         button.highlightColor = self.highlightBackgroundColor;
         
