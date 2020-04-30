@@ -53,24 +53,24 @@
 
 ```objc
     
-      pager.currentPage = 1; //初始化按钮显示位置（默认0）
-      pager.barIndicatorType = JJBarIndicatorAutoWidthType;//标签按钮底部指示器宽度类型设置 （默认等宽）
-      pager.barSegmentBtnWidthType = JJBarSegmentBtnAutoWidthType2;//标签按钮的宽度设置（默认JJBarSegmentBtnAutoWidthType1）
-      pager.barHeight = 46; //segmentBar高度（默认44）
-      pager.barSelectColor = [UIColor orangeColor];//标题点击颜色（默认蓝色）
-      pager.barNormalColor = [UIColor lightGrayColor];//标题正常颜色（默认黑色）
-      pager.barSelectFont = [UIFont boldSystemFontOfSize:14];//标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
-      pager.barNormalFont = [UIFont systemFontOfSize:13];//标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
-      pager.barHighlightBackgroundColor = [UIColor blueColor];//按钮高亮背景色（默认透明）
-      pager.barBackgroundColor = [UIColor greenColor];//bar的背景色（默认白色）
-      pager.barIndicatorColor = [UIColor redColor];//底部指示器颜色（默认标题点击颜色）
-      pager.barIndicatorHeight = 4;//底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
-      pager.barIndicatorWidth = 16;//底部指示器宽度（当 JJBarIndicatorType == JJBarIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
-      pager.barIndicatorCornerRadius = 2;//底部指示器圆角（默认0）
-      pager.barContentInset = UIEdgeInsetsMake(0, 15, 0, 15);//segmentBar的内边距（默认UIEdgeInsetsZero，注：适用自定义标签按钮）
-      pager.barLineColor = [UIColor redColor];//segmentBar底部线条颜色（注：适用自定义标签按钮）
-      pager.needLine = YES;//设置segmentBar是否带底部线条效果（默认不带NO， 注：适用自定义标签按钮）
-      pager.needShadow = YES;//设置segmentBar是否带阴影效果（默认不带NO， 注：适用自定义标签按钮）
+    pager.currentPage = 1; //初始化按钮显示位置（默认0）
+    pager.barIndicatorType = JJBarIndicatorAutoWidthType;//标签按钮底部指示器宽度类型设置 （默认等宽）
+    pager.barSegmentBtnWidthType = JJBarSegmentBtnAutoWidthType2;//标签按钮的宽度设置（默认JJBarSegmentBtnAutoWidthType1）
+    pager.barHeight = 46; //segmentBar高度（默认44）
+    pager.barSelectColor = [UIColor orangeColor];//标题点击颜色（默认蓝色）
+    pager.barNormalColor = [UIColor lightGrayColor];//标题正常颜色（默认黑色）
+    pager.barSelectFont = [UIFont boldSystemFontOfSize:14];//标题点击尺寸（默认 [UIFont boldSystemFontOfSize:17]）
+    pager.barNormalFont = [UIFont systemFontOfSize:13];//标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
+    pager.barHighlightBackgroundColor = [UIColor blueColor];//按钮高亮背景色（默认透明）
+    pager.barBackgroundColor = [UIColor greenColor];//bar的背景色（默认白色）
+    pager.barIndicatorColor = [UIColor redColor];//底部指示器颜色（默认标题点击颜色）
+    pager.barIndicatorHeight = 4;//底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
+    pager.barIndicatorWidth = 16;//底部指示器宽度（当 JJBarIndicatorType == JJBarIndicatorSameWidthType 时设置有效，设置范围 0～按钮宽度，超出范围显示默认值）
+    pager.barIndicatorCornerRadius = 2;//底部指示器圆角（默认0）
+    pager.barContentInset = UIEdgeInsetsMake(0, 15, 0, 15);//segmentBar的内边距（默认UIEdgeInsetsZero，注：适用自定义标签按钮）
+    pager.barLineColor = [UIColor redColor];//segmentBar底部线条颜色（注：适用自定义标签按钮）
+    pager.needLine = YES;//设置segmentBar是否带底部线条效果（默认不带NO， 注：适用自定义标签按钮）
+    pager.needShadow = YES;//设置segmentBar是否带阴影效果（默认不带NO， 注：适用自定义标签按钮）
     
 ```    
 
@@ -88,6 +88,7 @@
     pager.headerHeight = HEADER_HEIGHT;
     
     pager.enableMainRefreshScroll = YES;//允许主列表下拉刷新（默认不允许NO）
+    pager.enableMainVerticalScroll = YES;//允许主列表可以上下滑动，改变表头偏移量（默认不允许NO）
     pager.enablePageHorizontalScroll = YES;//允许页面可以左右滑动切换，默认不允许NO
     
     //赋值自定义表头

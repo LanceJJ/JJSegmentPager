@@ -95,6 +95,7 @@
     pager.barHeight = 44;//segmentBar高度（默认44）
     pager.currentPage = segmentControl.selectedSegmentIndex;
     pager.enableMainRefreshScroll = YES;//允许主列表下拉刷新，默认不允许NO
+    pager.enableMainVerticalScroll = YES;//允许主列表可以上下滑动，改变表头偏移量（默认不允许NO）
     pager.enablePageHorizontalScroll = YES;//允许页面可以左右滑动切换，默认不允许NO
 //    pager.enableSegmentBarCeilingScroll = NO;//允许标签按钮吸顶时可以滚动（默认允许YES）
     pager.customBarView = segmentControl;//自定义标签按钮

@@ -4,7 +4,7 @@
 //
 //  Created by Lance on 2020/4/29.
 //  Copyright © 2020 Lance. All rights reserved.
-//  Version:2.0.1
+//  v2.0.2
 
 #import <UIKit/UIKit.h>
 #import "JJSegmentTableView.h"
@@ -143,6 +143,9 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 
 /// Description 允许主列表下拉刷新（默认不允许NO）
 @property (nonatomic, assign) BOOL enableMainRefreshScroll;
+
+/// Description 允许主列表可以上下滑动，改变表头偏移量（默认不允许NO）
+@property (nonatomic, assign) BOOL enableMainVerticalScroll;
 
 /// Description 允许页面可以左右横向滑动切换（默认不允许NO）
 @property (nonatomic, assign) BOOL enablePageHorizontalScroll;

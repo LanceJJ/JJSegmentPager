@@ -81,6 +81,7 @@
     pager.segmentMiniTopInset = kNavHeight;//segmentBar顶端距离控制器的最小边距，也就是列表向上滑动时，最高能滑动到的位置，默认0，默认可以滑动到最顶端
     pager.headerHeight = HEADER_HEIGHT;//表头高度，默认0
     pager.enableMainRefreshScroll = YES;//允许主列表下拉刷新（默认不允许NO）
+    pager.enableMainVerticalScroll = YES;//允许主列表可以上下滑动，改变表头偏移量（默认不允许NO）
     pager.enablePageHorizontalScroll = YES;//允许页面可以左右滑动切换，默认不允许NO
 //    pager.enableSegmentBarCeilingScroll = NO;//允许标签按钮吸顶时可以滚动（默认允许YES）
     pager.customHeaderView = headerView;//自定义表头

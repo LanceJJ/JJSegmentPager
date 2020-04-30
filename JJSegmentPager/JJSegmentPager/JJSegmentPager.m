@@ -76,6 +76,7 @@
 - (void)setupDefaultParameter
 {
     self.enableSegmentBarCeilingScroll = YES;
+    self.enableMainVerticalScroll = NO;
     self.enablePageHorizontalScroll = NO;
     self.isMainCanScroll = YES;
     self.needShadow = NO;
@@ -302,6 +303,12 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    //不允许主列表上下滑动改变表头偏移量
+    if (self.enableMainVerticalScroll == NO) {
+        scrollView.contentOffset = CGPointZero;
+        return;
+    }
+    
     if ([self.delegate respondsToSelector:@selector(jj_segment_scrollViewDidVerticalScroll:)]) {
         [self.delegate jj_segment_scrollViewDidVerticalScroll:scrollView];
     }
@@ -365,6 +372,9 @@
 
 - (void)jj_segmentPageView_scrollViewDidVerticalScroll:(UIScrollView *)scrollView
 {
+    //不允许主列表上下滑动改变表头偏移量
+    if (self.enableMainVerticalScroll == NO) return;
+    
     //手动回到原点或吸顶点，不继续处理
     if (self.isScrollToOriginal || self.isScrollToCeiling) return;
     
