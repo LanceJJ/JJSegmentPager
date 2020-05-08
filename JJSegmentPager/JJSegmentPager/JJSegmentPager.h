@@ -4,7 +4,7 @@
 //
 //  Created by Lance on 2020/4/29.
 //  Copyright © 2020 Lance. All rights reserved.
-//  v2.0.2
+//  v2.0.3
 
 #import <UIKit/UIKit.h>
 #import "JJSegmentTableView.h"
@@ -72,7 +72,7 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 /// Description 标签按钮的宽度设置（默认JJBarSegmentBtnAutoWidthType1）
 @property (nonatomic, assign) JJBarSegmentBtnWidthType barSegmentBtnWidthType;
 
-/// Description 控件尺寸（默认父类空间尺寸，建议初始化时设置尺寸）
+/// Description 控件尺寸（默认父类控件尺寸，建议初始化时设置尺寸）
 @property (nonatomic, assign) CGRect frame;
 
 /// Description 子控制器(需要设置title)

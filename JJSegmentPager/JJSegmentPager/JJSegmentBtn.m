@@ -96,26 +96,36 @@
 - (void)setHighlightColor:(UIColor *)highlightColor
 {
     _highlightColor = highlightColor ? highlightColor : [UIColor clearColor];
+    
+    self.isSelect = NO;
 }
 
 - (void)setNormalFont:(UIFont *)normalFont
 {
     _normalFont = normalFont ? normalFont : [UIFont systemFontOfSize:16];
+    
+    self.isSelect = NO;
 }
 
 - (void)setSelectFont:(UIFont *)selectFont
 {
     _selectFont = selectFont ? selectFont : [UIFont boldSystemFontOfSize:17];
+    
+    self.isSelect = NO;
 }
 
 - (void)setNormalColor:(UIColor *)normalColor
 {
     _normalColor = normalColor ? normalColor : [UIColor blackColor];
+    
+    self.isSelect = NO;
 }
 
 - (void)setSelectColor:(UIColor *)selectColor
 {
     _selectColor = selectColor ? selectColor : [UIColor blueColor];
+    
+    self.isSelect = NO;
 }
 
 @end
