@@ -63,7 +63,7 @@ static const char *key_jj_replaceScrollViewDidScrollBlock = "jj_replaceScrollVie
 {
     [self jj_setDelegate:delegate];
     
-    if (([self isMemberOfClass:[UIScrollView class]] || [self isMemberOfClass:[UITableView class]]) && delegate) {
+    if (([self isMemberOfClass:[UIScrollView class]] || [self isMemberOfClass:[UITableView class]] || [self isMemberOfClass:[UICollectionView class]]) && delegate) {
         
         [self exchangeScrollViewDelegateMethod:delegate];
     }
