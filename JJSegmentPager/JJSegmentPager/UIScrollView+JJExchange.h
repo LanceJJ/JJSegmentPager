@@ -14,6 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void(^jj_replaceScrollViewDidScrollBlock)(UIScrollView *scrollView);
 
+@property (nonatomic, copy) NSString *offsetY;
+
 @end
 
 NS_ASSUME_NONNULL_END

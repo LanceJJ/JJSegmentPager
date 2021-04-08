@@ -9,10 +9,22 @@
 #import "UIScrollView+JJExchange.h"
 #import <objc/runtime.h>
 
+static NSString *offsetKey = @"offset";
+
 @implementation UIScrollView (JJExchange)
 
 // 定义关联的key
 static const char *key_jj_replaceScrollViewDidScrollBlock = "jj_replaceScrollViewDidScrollBlock";
+
+- (void)setOffsetY:(NSString *)offsetY
+{
+    objc_setAssociatedObject(self, &offsetKey, offsetY, OBJC_ASSOCIATION_COPY);
+}
+
+- (NSString *)offsetY
+{
+    return objc_getAssociatedObject(self, &offsetKey);
+}
 
 - (void (^)(UIScrollView *scrollView))jj_replaceScrollViewDidScrollBlock
 {
@@ -55,7 +67,6 @@ static const char *key_jj_replaceScrollViewDidScrollBlock = "jj_replaceScrollVie
         } else {
             method_exchangeImplementations(originalMethod, swizzledMethod);
         }
-        
     });
 }
 
@@ -101,19 +112,26 @@ static const char *key_jj_replaceScrollViewDidScrollBlock = "jj_replaceScrollVie
     class_addMethod(originalClass, replacedSel, method_getImplementation(replacedMethod), method_getTypeEncoding(replacedMethod));
     // 添加成功，交换方法
     if (didAddMethod) {
-        NSLog(@"class_addMethod succeed --> (%@)", NSStringFromSelector(replacedSel));
+        NSLog(@"class_addMethod succeed --> (%@) %@", NSStringFromSelector(replacedSel), [self class]);
         Method newMethod = class_getInstanceMethod(originalClass, replacedSel);
         method_exchangeImplementations(originalMethod, newMethod);
     // 添加失败，则说明已经 hook 过该类的 delegate 方法，防止多次交换
     } else {
         NSLog(@"class_addMethod fail --> (%@)", NSStringFromSelector(replacedSel));
     }
-    
 }
 
 - (void)jj_replace_scrollViewDidScroll:(UIScrollView *)scrollView
 {
 //    NSLog(@"replace_scrollViewDidScroll-%f-%@", scrollView.contentOffset.y, [self class]);
+  
+    //防止死循环
+    if ([scrollView.offsetY floatValue] == scrollView.contentOffset.y && scrollView.offsetY.length > 0 && scrollView.pagingEnabled == NO) {
+        return;
+    }
+    
+    scrollView.offsetY = [NSString stringWithFormat:@"%f", scrollView.contentOffset.y];
+    
     [self jj_replace_scrollViewDidScroll:scrollView];
     
     if (scrollView.jj_replaceScrollViewDidScrollBlock) {
