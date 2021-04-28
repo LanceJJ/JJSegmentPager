@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) JJSegmentScrollView *scrollView;//继承自定义ScrollView 防止控制器侧滑返回与ScrollView左右滑动产生冲突
 @property (nonatomic, strong) NSMutableArray *subScrollViews;
 
-- (void)setSubControllers:(NSArray *)subControllers currentPage:(NSInteger)currentPage;
+- (void)setPagesArray:(NSMutableArray *)pagesArray currentPage:(NSInteger)currentPage;
 
 /// Description 更新PageView
 /// @param index 当前位置

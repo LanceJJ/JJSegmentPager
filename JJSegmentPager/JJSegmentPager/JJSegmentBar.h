@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JJSegmentBtn.h"
 
 /**
  Description 标签底部指示器宽度类型
@@ -19,7 +18,6 @@ typedef NS_ENUM(NSUInteger, JJIndicatorWidthType) {
     
     JJIndicatorSameWidthType,
     JJIndicatorAutoWidthType
-    
 };
 
 /**
@@ -36,7 +34,7 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 
 @protocol JJSegmentBarDelegate <NSObject>
 
-- (void)jj_segmentBar_buttonDidSelected:(NSInteger)index;
+- (void)jj_segmentBar_didSelected:(NSInteger)index;
 
 @end
 
@@ -71,9 +69,6 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 /// Description 底部指示器颜色（默认标题点击颜色）
 @property (nonatomic, strong) UIColor *indicatorColor;
 
-/// Description 按钮高亮背景色（默认透明）
-@property (nonatomic, strong) UIColor *highlightBackgroundColor;
-
 /// Description 底部指示器高度（默认3，设置范围 0～按钮高度的1/3，超出范围显示默认值）
 @property (nonatomic, assign) CGFloat indicatorHeight;
 
@@ -90,5 +85,10 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 /// @param currentPage 当前按钮位置
 - (void)switchBtnWithCurrentPage:(NSInteger)currentPage;
 
+@end
+
+@interface PPSegmentBarCell : UICollectionViewCell
+
+@property (nonatomic, strong) UILabel *titleLabel;
 
 @end

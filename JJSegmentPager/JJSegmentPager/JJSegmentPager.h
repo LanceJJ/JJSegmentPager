@@ -4,7 +4,7 @@
 //
 //  Created by Lance on 2020/4/29.
 //  Copyright © 2020 Lance. All rights reserved.
-//  v2.0.5
+//  v2.1.0
 
 #import <UIKit/UIKit.h>
 #import "JJSegmentTableView.h"
@@ -40,9 +40,9 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 - (UIScrollView *)jj_segment_obtainScrollView;//获取当前控制器的ScrollView，添加的分页子控制器一定要实现此代理
 
 - (void)jj_segment_scrollViewDidVerticalScroll:(UIScrollView *)scrollView;//mainTableView纵向滑动回调，返回偏移量，用于实现导航栏渐变等动画
-- (void)jj_segment_scrollViewDidHorizontalScroll:(UIScrollView *)scrollView;//pageView横向滑动回调
+- (void)jj_segment_scrollViewDidHorizontalScroll:(UIScrollView *)scrollView;//pageView横向滑动回调，返回偏移量，可以更新第三方按钮的切换动画
 - (void)jj_segment_scrollViewDidEndDecelerating:(NSInteger)index;//pageView滑动结束回调，返回当前位置，用于更新第三方标签按钮的点击位置
-- (void)jj_segment_buttonDidSelected:(NSInteger)index;//pageView横向滑动回调，返回偏移量，可以更新s第三方按钮的切换动画
+- (void)jj_segment_didSelected:(NSInteger)index;//标签按钮点击位置回调
 
 
 @end
@@ -52,12 +52,12 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 @property (nonatomic, weak) id<JJSegmentDelegate> delegate;
 
 /// Description 标签按钮点击位置回调
-@property (nonatomic, copy) void(^jj_segment_buttonDidSelectedBlock)(NSInteger index);
+@property (nonatomic, copy) void(^jj_segment_didSelectedBlock)(NSInteger index);
 
 /// Description pageView滑动结束回调，返回当前位置，用于更新第三方标签按钮的点击位置
 @property (nonatomic, copy) void(^jj_segment_scrollViewDidEndDeceleratingBlock)(NSInteger index);
 
-/// Description pageView横向滑动回调，返回偏移量，可以更新s第三方按钮的切换动画
+/// Description pageView横向滑动回调，返回偏移量，可以更新第三方按钮的切换动画
 @property (nonatomic, copy) void(^jj_segment_scrollViewDidHorizontalScrollBlock)(UIScrollView *scrollView);
 
 /// Description mainTableView纵向滑动回调，返回偏移量，用于实现导航栏渐变等动画
@@ -75,11 +75,8 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 /// Description 控件尺寸（默认父类控件尺寸，建议初始化时设置尺寸）
 @property (nonatomic, assign) CGRect frame;
 
-/// Description 子控制器(需要设置title)
+/// Description 子控制器(需要设置title)，初始化时就需要添加
 @property (nonatomic, strong) NSArray *subControllers;
-
-/// Description 按钮高亮背景色（默认透明）
-@property (nonatomic, strong) UIColor *barHighlightBackgroundColor;
 
 /// Description bar的背景色（默认白色）
 @property (nonatomic, strong) UIColor *barBackgroundColor;
@@ -159,6 +156,10 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 /// Description 添加父控制器
 /// @param viewController 控制器
 - (void)addParentController:(UIViewController *)viewController;
+
+/// Description 添加子控制器(需要设置title)，初始化之后，动态添加
+/// @param viewController 控制器
+- (void)addSubController:(UIViewController *)viewController;
 
 /// Description 切换pageView
 /// @param index 当前位置

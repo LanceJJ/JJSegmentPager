@@ -18,6 +18,8 @@
 @property (nonatomic, strong) JJSegmentPageView *pageView;
 @property (nonatomic, strong) JJSegmentBar *segmentBar;
 
+@property (nonatomic, strong) NSMutableArray *pagesArray;
+
 @property (nonatomic, assign) BOOL isMainCanScroll;//主列表是否滚动
 @property (nonatomic, assign) BOOL isScrollToOriginal;//是否滚到原点
 @property (nonatomic, assign) BOOL isScrollToCeiling;//是否滚到吸顶点
@@ -26,6 +28,14 @@
 @end
 
 @implementation JJSegmentPager
+
+- (NSMutableArray *)pagesArray
+{
+    if (!_pagesArray) {
+        _pagesArray = [NSMutableArray array];
+    }
+    return _pagesArray;
+}
 
 - (UIView *)customHeaderView
 {
@@ -60,7 +70,9 @@
     
     if (self.subControllers.count == 0 || self.subControllers == nil) return;
     
-    self.currentPage = (self.currentPage > self.subControllers.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
+    [self.pagesArray addObjectsFromArray:self.subControllers];
+    
+    self.currentPage = (self.currentPage > self.pagesArray.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
     self.headerHeight = self.headerHeight > 0 ? self.headerHeight : 0.01;
     self.footerHeight = self.footerHeight > 0 ? self.footerHeight : 0;
     self.barHeight = self.barHeight > 0 ? self.barHeight : 0.0001;
@@ -145,7 +157,7 @@
     JJSegmentPageView *pageView = [[JJSegmentPageView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.frame.size.height - self.segmentMiniTopInset - self.barHeight - self.footerHeight)];
     pageView.delegate = self;
     pageView.scrollView.scrollEnabled = self.enablePageHorizontalScroll;
-    [pageView setSubControllers:self.subControllers currentPage:self.currentPage];
+    [pageView setPagesArray:self.pagesArray currentPage:self.currentPage];
     
     self.pageView = pageView;
     
@@ -161,7 +173,7 @@
     } else {
         NSMutableArray *titles = [NSMutableArray array];
         
-        for (UIViewController *controller in self.subControllers) {
+        for (UIViewController *controller in self.pagesArray) {
             
             [titles addObject:controller.title == nil ? @"--" : controller.title];
         }
@@ -172,7 +184,6 @@
         segmentBar.delegate = self;
         segmentBar.titles = titles;
         segmentBar.backgroundColor = self.barBackgroundColor;
-        segmentBar.highlightBackgroundColor = self.barHighlightBackgroundColor;
         segmentBar.indicatorColor = self.barIndicatorColor;
         segmentBar.normalColor = self.barNormalColor;
         segmentBar.selectColor = self.barSelectColor;
@@ -244,6 +255,7 @@
         
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"UITableViewCell"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        cell.contentView.hidden = YES;//适配iOS14
         
         [cell addSubview:[self setupPageView]];
     }
@@ -429,16 +441,16 @@
 
 #pragma mark JJSegmentBarDelegate
 
-- (void)jj_segmentBar_buttonDidSelected:(NSInteger)index
+- (void)jj_segmentBar_didSelected:(NSInteger)index
 {
     [self.pageView switchPageViewWithIndex:index];
     
-    if ([self.delegate respondsToSelector:@selector(jj_segment_buttonDidSelected:)]) {
-        [self.delegate jj_segment_buttonDidSelected:index];
+    if ([self.delegate respondsToSelector:@selector(jj_segment_didSelected:)]) {
+        [self.delegate jj_segment_didSelected:index];
     }
     
-    if (self.jj_segment_buttonDidSelectedBlock) {
-        self.jj_segment_buttonDidSelectedBlock(index);
+    if (self.jj_segment_didSelectedBlock) {
+        self.jj_segment_didSelectedBlock(index);
     }
 }
 
@@ -468,6 +480,34 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.view.frame = self.frame;
     });
+}
+
+/// Description 添加子控制器(需要设置title)，初始化之后，动态添加
+/// @param viewController 控制器
+- (void)addSubController:(UIViewController *)viewController
+{
+    //添加
+    [self.pagesArray addObject:viewController];
+    
+    //跳转
+    self.currentPage = self.pagesArray.count - 1;
+    [self.pageView setPagesArray:self.pagesArray currentPage:self.currentPage];
+    
+    //如果不是自定义标签按钮，进行重置
+    if (!self.customBarView) {
+        //重置
+        NSMutableArray *titles = [NSMutableArray array];
+        
+        for (UIViewController *controller in self.pagesArray) {
+            
+            [titles addObject:controller.title == nil ? @"--" : controller.title];
+        }
+        
+        self.segmentBar.titles = titles;
+        self.segmentBar.currentPage = self.currentPage;
+        
+        [self.segmentBar setupConfigureAppearance];
+    }
 }
 
 /// Description 切换pageView
@@ -501,7 +541,6 @@
     CGFloat criticalPoint = [self.mainTableView rectForSection:0].origin.y - self.segmentMiniTopInset;
     
     [self.mainTableView setContentOffset:CGPointMake(0, criticalPoint) animated:YES];
-    
 }
 
 /// Description 更新表头高度

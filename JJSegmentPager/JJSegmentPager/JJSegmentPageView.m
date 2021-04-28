@@ -12,7 +12,7 @@
 
 @interface JJSegmentPageView () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSArray *subControllers;
+@property (nonatomic, strong) NSMutableArray *pagesArray;
 @property (nonatomic, assign) NSInteger currentPage;
 
 @end
@@ -55,12 +55,12 @@
     }
 }
 
-- (void)setSubControllers:(NSArray *)subControllers currentPage:(NSInteger)currentPage
+- (void)setPagesArray:(NSMutableArray *)pagesArray currentPage:(NSInteger)currentPage
 {
-    self.subControllers = subControllers;
+    self.pagesArray = pagesArray;
     self.currentPage = currentPage;
     
-    self.scrollView.contentSize = CGSizeMake(self.frame.size.width * subControllers.count, self.frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(self.frame.size.width * pagesArray.count, self.frame.size.height);
     self.scrollView.contentOffset = CGPointMake(self.frame.size.width * currentPage, 0);
     
     [self switchPageViewWithIndex:currentPage];
@@ -80,7 +80,7 @@
 {
     self.currentPage = index;
     
-    UIViewController<JJSegmentDelegate> *pageController = self.subControllers[index];
+    UIViewController<JJSegmentDelegate> *pageController = self.pagesArray[index];
     
     UIView *pageView = pageController.view;
     
