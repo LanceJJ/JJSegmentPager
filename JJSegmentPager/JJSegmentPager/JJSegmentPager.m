@@ -24,6 +24,7 @@
 @property (nonatomic, assign) BOOL isScrollToOriginal;//是否滚到原点
 @property (nonatomic, assign) BOOL isScrollToCeiling;//是否滚到吸顶点
 @property (nonatomic, assign) BOOL isBeginDragging;//是否开始拖拽
+@property (nonatomic, assign) BOOL isSubVerticalScroll;//子列表是否滚动
 
 @end
 
@@ -68,7 +69,7 @@
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    if (self.subControllers.count == 0 || self.subControllers == nil) return;
+//    if (self.subControllers.count == 0 || self.subControllers == nil) return;
     
     [self.pagesArray addObjectsFromArray:self.subControllers];
     
@@ -134,15 +135,16 @@
     [segmentBarView addSubview:[self setupSegmentBar]];
     
     UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, self.barHeight - 0.7, self.view.frame.size.width, 0.7)];
-    line.hidden = !self.needLine;
+    line.hidden = YES;
     line.backgroundColor = self.barLineColor ? self.barLineColor : [UIColor colorWithRed:243.0 / 255.0 green:243.0 / 255.0 blue:243.0 / 255.0 alpha:1];
     [segmentBarView addSubview:line];
     
-    if (self.needLine) {
+    if (self.needLine && self.barHeight != 0.0001) {
+        line.hidden = NO;
         self.barContentInset = UIEdgeInsetsMake(self.barContentInset.top, self.barContentInset.left, self.barContentInset.bottom + 0.7, self.barContentInset.right);
     }
     
-    if (self.needShadow) {
+    if (self.needShadow && self.barHeight != 0.0001) {
         segmentBarView.layer.shadowOffset = CGSizeMake(0, 0);
         segmentBarView.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor;
         segmentBarView.layer.shadowOpacity = 0.5;
@@ -245,7 +247,7 @@
 #pragma mark table 代理
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return self.pagesArray.count ? 1 : 0;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -374,7 +376,7 @@
     } else {
         
         // 主列表不可以滚动时，固定位置
-        if (self.isMainCanScroll == NO) {
+        if (self.isMainCanScroll == NO && self.isSubVerticalScroll == YES) {
             scrollView.contentOffset = CGPointMake(0, ceilingPoint);
         }
     }
@@ -384,6 +386,8 @@
 
 - (void)jj_segmentPageView_scrollViewDidVerticalScroll:(UIScrollView *)scrollView
 {
+    self.isSubVerticalScroll = YES;
+    
     //不允许主列表上下滑动改变表头偏移量
     if (self.enableMainVerticalScroll == NO) return;
     
@@ -415,6 +419,8 @@
 
 - (void)jj_segmentPageView_scrollViewDidEndDecelerating:(NSInteger)index
 {
+    self.currentPage = index;
+    
     if (!self.customBarView) {
         [self.segmentBar switchBtnWithCurrentPage:index];
     }
@@ -443,6 +449,8 @@
 
 - (void)jj_segmentBar_didSelected:(NSInteger)index
 {
+    self.currentPage = index;
+    
     [self.pageView switchPageViewWithIndex:index];
     
     if ([self.delegate respondsToSelector:@selector(jj_segment_didSelected:)]) {
@@ -514,7 +522,13 @@
 /// @param index 当前位置
 - (void)switchPageViewWithIndex:(NSInteger)index
 {
+    self.currentPage = index;
+    
     [self.pageView switchPageViewWithIndex:index];
+    
+    if (!self.customBarView) {
+        [self.segmentBar switchBtnWithCurrentPage:index];
+    }
 }
 
 /// Description 滚动到原点
