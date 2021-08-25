@@ -11,7 +11,7 @@
 #import "JJSegmentScrollView.h"
 #import "JJSegmentPageView.h"
 
-@interface JJSegmentPager () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, JJSegmentBarDelegate, JJSegmentPageViewDelegate>
+@interface JJSegmentPager () <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, JJSegmentBarDelegate, JJSegmentPageViewDelegate, JJSegmentTableViewGestureDelegate>
 
 @property (nonatomic, strong) UIScrollView *currentPageScrollView;
 
@@ -195,6 +195,7 @@
         segmentBar.indicatorHeight = self.barIndicatorHeight;
         segmentBar.indicatorWidth = self.barIndicatorWidth;
         segmentBar.indicatorCornerRadius = self.barIndicatorCornerRadius;
+        segmentBar.itemPadding = self.barItemPadding;
 
         //设置标签底部指示器宽度类型
         segmentBar.indicatorType = self.barIndicatorType == JJBarIndicatorSameWidthType ? JJIndicatorSameWidthType : JJIndicatorAutoWidthType;
@@ -217,6 +218,7 @@
 - (void)setupTableView
 {
     JJSegmentTableView *mainTableView = [[JJSegmentTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.frame.size.height - self.footerHeight) style:UITableViewStyleGrouped];
+    mainTableView.gestureDelegate = self;
     mainTableView.delegate = self;
     mainTableView.dataSource = self;
     mainTableView.sectionHeaderHeight = 0.01;
@@ -224,6 +226,7 @@
     mainTableView.backgroundColor = [UIColor whiteColor];
     mainTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     mainTableView.showsVerticalScrollIndicator = NO;
+    mainTableView.panGestureRecognizer.cancelsTouchesInView = NO;
     [self.view addSubview:mainTableView];
     
     _mainTableView = mainTableView;
@@ -286,6 +289,13 @@
     
     }
     return headerView;
+}
+
+#pragma mark - JJSegmentTableViewGestureDelegate
+
+- (BOOL)jj_segmentTableView:(JJSegmentTableView *)tableView gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return [gestureRecognizer.view isKindOfClass:[UIScrollView class]] && [otherGestureRecognizer.view isKindOfClass:[UIScrollView class]] && ![otherGestureRecognizer.view isKindOfClass:[JJSegmentScrollView class]];
 }
 
 #pragma mark - UIScrollView delegate
@@ -375,6 +385,11 @@
     //主列表下滑偏移量>0时
     } else {
         
+        //处理子列表没有偏移量回调的情况
+        if (self.isSubVerticalScroll == NO && self.currentPageScrollView.contentOffset.y <= 0 && self.enableSegmentBarCeilingScroll == YES) {
+            self.isMainCanScroll = YES;
+        }
+        
         // 主列表不可以滚动时，固定位置
         if (self.isMainCanScroll == NO && self.isSubVerticalScroll == YES) {
             scrollView.contentOffset = CGPointMake(0, ceilingPoint);
@@ -420,6 +435,7 @@
 - (void)jj_segmentPageView_scrollViewDidEndDecelerating:(NSInteger)index
 {
     self.currentPage = index;
+    self.isSubVerticalScroll = NO;
     
     if (!self.customBarView) {
         [self.segmentBar switchBtnWithCurrentPage:index];
@@ -450,8 +466,9 @@
 - (void)jj_segmentBar_didSelected:(NSInteger)index
 {
     self.currentPage = index;
+    self.isSubVerticalScroll = NO;
     
-    [self.pageView switchPageViewWithIndex:index];
+    self.currentPageScrollView = [self.pageView switchPageViewWithIndex:index];
     
     if ([self.delegate respondsToSelector:@selector(jj_segment_didSelected:)]) {
         [self.delegate jj_segment_didSelected:index];
@@ -523,8 +540,9 @@
 - (void)switchPageViewWithIndex:(NSInteger)index
 {
     self.currentPage = index;
+    self.isSubVerticalScroll = NO;
     
-    [self.pageView switchPageViewWithIndex:index];
+    self.currentPageScrollView = [self.pageView switchPageViewWithIndex:index];
     
     if (!self.customBarView) {
         [self.segmentBar switchBtnWithCurrentPage:index];

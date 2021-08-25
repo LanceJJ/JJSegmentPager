@@ -30,8 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Description 更新PageView
 /// @param index 当前位置
-- (void)switchPageViewWithIndex:(NSInteger)index;
+- (UIScrollView *)switchPageViewWithIndex:(NSInteger)index;
 
 @end
 
 NS_ASSUME_NONNULL_END
+

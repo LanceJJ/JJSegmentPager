@@ -54,6 +54,9 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 /// Description 当前按钮位置
 @property (nonatomic, assign) NSInteger currentPage;
 
+/// Description 按钮之间的间距 默认24
+@property (nonatomic, assign) CGFloat itemPadding;
+
 /// Description 标题正常尺寸（默认 [UIFont systemFontOfSize:16]）
 @property (nonatomic, strong) UIFont *normalFont;
 

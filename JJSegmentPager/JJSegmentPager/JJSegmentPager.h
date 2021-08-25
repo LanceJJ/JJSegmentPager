@@ -4,7 +4,7 @@
 //
 //  Created by Lance on 2020/4/29.
 //  Copyright © 2020 Lance. All rights reserved.
-//  v2.1.1
+//  v2.1.2
 
 #import <UIKit/UIKit.h>
 #import "JJSegmentTableView.h"
@@ -110,6 +110,9 @@ typedef NS_ENUM(NSUInteger, JJBarSegmentBtnWidthType) {
 
 /// Description segmentBar的内边距（默认UIEdgeInsetsZero，注：适用自定义标签按钮）
 @property (nonatomic, assign) UIEdgeInsets barContentInset;
+
+/// Description 按钮之间的间距（默认24）
+@property (nonatomic, assign) CGFloat barItemPadding;
 
 /// Description 初始化按钮显示位置（默认0）
 @property (nonatomic, assign) NSInteger currentPage;

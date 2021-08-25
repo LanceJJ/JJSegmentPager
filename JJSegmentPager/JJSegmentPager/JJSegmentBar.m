@@ -12,7 +12,7 @@
 #define JJ_SegmentBar_BottomH 3.0
 #define JJ_SegmentBar_Edge 5
 #define JJ_SegmentBar_BtnCount 5
-#define JJ_SegmentBar_Padding 20
+#define JJ_SegmentBar_Padding 24
 
 @interface JJSegmentBar() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
@@ -50,6 +50,7 @@
         self.viewWidth = self.frame.size.width;
         self.viewHeight = self.frame.size.height;
         self.itemHeight = self.frame.size.height;
+        self.itemPadding = JJ_SegmentBar_Padding;
         
         self.selectColor = [UIColor blueColor];
         self.normalColor = [UIColor blackColor];
@@ -89,6 +90,7 @@
     collectionView.dataSource = self;
     collectionView.showsVerticalScrollIndicator = NO;
     collectionView.showsHorizontalScrollIndicator = NO;
+    collectionView.bounces = NO;
     
     [self addSubview:collectionView];
     
@@ -140,7 +142,7 @@
         
         CGRect bounds = [content boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
         
-        return CGSizeMake(bounds.size.width + JJ_SegmentBar_Padding * 2, self.itemHeight);
+        return CGSizeMake(bounds.size.width + self.itemPadding, self.itemHeight);
     }
 }
 
@@ -226,7 +228,12 @@
 /// Description 初始化各项参数配置
 - (void)setupConfigureAppearance
 {
-    if (self.titles.count == 0 || self.titles == nil) return;
+    if (self.titles.count == 0 || self.titles == nil) {
+        self.hidden = YES;
+        return;
+    }
+    
+    self.hidden = NO;
     
     self.currentPage = (self.currentPage > self.titles.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
 

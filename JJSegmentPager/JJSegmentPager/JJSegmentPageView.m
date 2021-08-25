@@ -68,15 +68,17 @@
 
 /// Description 更新PageView
 /// @param index 当前位置
-- (void)switchPageViewWithIndex:(NSInteger)index
+- (UIScrollView *)switchPageViewWithIndex:(NSInteger)index
 {
-    [self layoutControllerWithIndex:index];
+    UIScrollView *scrollView = [self layoutControllerWithIndex:index];
     [self.scrollView setContentOffset:CGPointMake(self.currentPage * self.frame.size.width, 0) animated:YES];
+    
+    return scrollView;
 }
 
 /// Description 布局控件
 /// @param index 当前位置
-- (void)layoutControllerWithIndex:(NSInteger)index
+- (UIScrollView *)layoutControllerWithIndex:(NSInteger)index
 {
     self.currentPage = index;
     
@@ -84,41 +86,40 @@
     
     UIView *pageView = pageController.view;
     
+    UIScrollView *scrollView = [self scrollViewInPageController:pageController];
+    
     //如果已经存在，就不再添加
-    if ([pageView isDescendantOfView:self.scrollView]) return;
+    if ([pageView isDescendantOfView:self.scrollView]) return scrollView;
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        pageView.frame = CGRectMake(self.currentPage * self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
-        
-        [self.scrollView insertSubview:pageView atIndex:0];
-        
-        JJSegmentPager *pager = (JJSegmentPager *)[self getCurrentViewController];
-        [pager addChildViewController:pageController];
-        
-        NSLog(@"添加了：%@", pageController.title);
+    pageView.frame = CGRectMake(self.currentPage * self.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
     
-        UIScrollView *scrollView = [self scrollViewInPageController:pageController];
+    [self.scrollView insertSubview:pageView atIndex:0];
+    
+    JJSegmentPager *pager = (JJSegmentPager *)[self getCurrentViewController];
+    [pager addChildViewController:pageController];
+    
+    NSLog(@"添加了：%@", pageController.title);
+
+    //防止偏移
+    if (@available(iOS 11.0, *)) {
+        scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    } else {
+        pageController.automaticallyAdjustsScrollViewInsets = NO;
+    }
+    
+    if (scrollView) {
         
-        //防止偏移
-        if (@available(iOS 11.0, *)) {
-            scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-        } else {
-            pageController.automaticallyAdjustsScrollViewInsets = NO;
-        }
+        [self.subScrollViews addObject:scrollView];
         
-        if (scrollView) {
+        __weak typeof(self) weakSelf = self;
+        scrollView.jj_replaceScrollViewDidScrollBlock = ^(UIScrollView * _Nonnull scrollView) {
+           
+            [weakSelf scrollViewContentOffset:scrollView];
             
-            [self.subScrollViews addObject:scrollView];
-            
-            __weak typeof(self) weakSelf = self;
-            scrollView.jj_replaceScrollViewDidScrollBlock = ^(UIScrollView * _Nonnull scrollView) {
-               
-                [weakSelf scrollViewContentOffset:scrollView];
-                
-            };
-        }
-    });
+        };
+    }
+    
+    return scrollView;
 }
 
 /// Description 获取当前view所在的viewController
