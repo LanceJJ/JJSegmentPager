@@ -23,13 +23,13 @@ typedef NS_ENUM(NSUInteger, JJIndicatorWidthType) {
 /**
  Description 标签按钮宽度类型
  
- - JJSegmentBtnAutoWidthType1: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮均分)
- - JJSegmentBtnAutoWidthType2: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮从左侧依次布局)
+ - JJSegmentItemAutoWidthType1: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮均分)
+ - JJSegmentItemAutoWidthType2: 自动适应文字宽度类型(所有按钮宽度之和小于屏幕宽度是时，按钮从左侧依次布局)
  */
-typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
+typedef NS_ENUM(NSUInteger, JJSegmentItemWidthType) {
     
-    JJSegmentBtnAutoWidthType1,
-    JJSegmentBtnAutoWidthType2
+    JJSegmentItemAutoWidthType1,
+    JJSegmentItemAutoWidthType2
 };
 
 @protocol JJSegmentBarDelegate <NSObject>
@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 @property (nonatomic, assign) JJIndicatorWidthType indicatorType;
 
 /// Description 标签按钮的宽度设置（默认等宽）
-@property (nonatomic, assign) JJSegmentBtnWidthType segmentBtnType;
+@property (nonatomic, assign) JJSegmentItemWidthType itemType;
 
 /// Description 标题数组
 @property (nonatomic, strong) NSArray *titles;
@@ -69,6 +69,9 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 /// Description 标题点击颜色（默认蓝色）
 @property (nonatomic, strong) UIColor *selectColor;
 
+/// Description 底部线条颜色
+@property (nonatomic, strong) UIColor *lineColor;
+
 /// Description 底部指示器颜色（默认标题点击颜色）
 @property (nonatomic, strong) UIColor *indicatorColor;
 
@@ -81,12 +84,21 @@ typedef NS_ENUM(NSUInteger, JJSegmentBtnWidthType) {
 /// Description 底部指示器圆角
 @property (nonatomic, assign) CGFloat indicatorCornerRadius;
 
+/// Description 内边距（默认UIEdgeInsetsZero）
+@property (nonatomic, assign) UIEdgeInsets contentInset;
+
+/// Description 是否带底部线条效果（默认不带NO）
+@property (nonatomic, assign) BOOL needLine;
+
+/// Description 是否带阴影效果（默认不带NO）
+@property (nonatomic, assign) BOOL needShadow;
+
 /// Description 初始化各项参数配置
 - (void)setupConfigureAppearance;
 
-/// Description 切换当前点击按钮位置
-/// @param currentPage 当前按钮位置
-- (void)switchBtnWithCurrentPage:(NSInteger)currentPage;
+/// Description 切换当前点击位置
+/// @param index 当前位置
+- (void)switchItemWithIndex:(NSInteger)index;
 
 @end
 

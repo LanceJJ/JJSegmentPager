@@ -8,7 +8,8 @@
 
 #import "JJSegmentPageView.h"
 #import "JJSegmentPager.h"
-#import "UIScrollView+JJExchange.h"
+
+const void *_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET = &_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET;
 
 @interface JJSegmentPageView () <UIScrollViewDelegate>
 
@@ -71,15 +72,33 @@
 - (UIScrollView *)switchPageViewWithIndex:(NSInteger)index
 {
     UIScrollView *scrollView = [self layoutControllerWithIndex:index];
-    [self.scrollView setContentOffset:CGPointMake(self.currentPage * self.frame.size.width, 0) animated:YES];
+    [self.scrollView setContentOffset:CGPointMake(self.currentPage * self.frame.size.width, 0) animated:self.scrollView.scrollEnabled];
     
     return scrollView;
+}
+
+- (void)removeObseverWithIndex:(NSInteger)index
+{
+    UIViewController<JJSegmentDelegate> *pageController = self.pagesArray[index];
+    
+    UIScrollView *scrollView = [self scrollViewInPageController:pageController];
+    
+    if (scrollView) {
+        @try {
+            [scrollView removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentOffset))];
+        } @catch (NSException *exception) {
+            NSLog(@"exception is %@", exception);
+        } @finally {
+        }
+    }
 }
 
 /// Description 布局控件
 /// @param index 当前位置
 - (UIScrollView *)layoutControllerWithIndex:(NSInteger)index
 {
+    [self removeObseverWithIndex:self.currentPage];
+    
     self.currentPage = index;
     
     UIViewController<JJSegmentDelegate> *pageController = self.pagesArray[index];
@@ -87,6 +106,13 @@
     UIView *pageView = pageController.view;
     
     UIScrollView *scrollView = [self scrollViewInPageController:pageController];
+    
+    self.currentPageScrollView = scrollView;
+    
+    if (scrollView) {
+        
+        [scrollView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentOffset)) options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld context:&_JJSEGMENTPAGE_CURRNTPAGE_SCROLLVIEWOFFSET];
+    }
     
     //如果已经存在，就不再添加
     if ([pageView isDescendantOfView:self.scrollView]) return scrollView;
@@ -108,18 +134,23 @@
     }
     
     if (scrollView) {
-        
         [self.subScrollViews addObject:scrollView];
-        
-        __weak typeof(self) weakSelf = self;
-        scrollView.jj_replaceScrollViewDidScrollBlock = ^(UIScrollView * _Nonnull scrollView) {
-           
-            [weakSelf scrollViewContentOffset:scrollView];
-            
-        };
     }
     
     return scrollView;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(contentOffset))]) {
+
+        CGPoint offset = [change[NSKeyValueChangeNewKey] CGPointValue];
+        CGPoint oldOffset = [change[NSKeyValueChangeOldKey] CGPointValue];
+        
+        if (offset.y != oldOffset.y) {
+            [self scrollViewContentOffset:self.currentPageScrollView];
+        }
+    }
 }
 
 /// Description 获取当前view所在的viewController
@@ -175,6 +206,11 @@
     if ([self.delegate respondsToSelector:@selector(jj_segmentPageView_scrollViewDidHorizontalScroll:)]) {
         [self.delegate jj_segmentPageView_scrollViewDidHorizontalScroll:scrollView];
     }
+}
+
+- (void)dealloc
+{
+    [self removeObseverWithIndex:self.currentPage];
 }
 
 /*

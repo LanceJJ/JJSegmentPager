@@ -7,7 +7,6 @@
 //
 
 #import "JJSegmentPager.h"
-#import "JJSegmentBar.h"
 #import "JJSegmentScrollView.h"
 #import "JJSegmentPageView.h"
 
@@ -16,11 +15,11 @@
 @property (nonatomic, strong) UIScrollView *currentPageScrollView;
 
 @property (nonatomic, strong) JJSegmentPageView *pageView;
-@property (nonatomic, strong) JJSegmentBar *segmentBar;
 
 @property (nonatomic, strong) NSMutableArray *pagesArray;
 
-@property (nonatomic, assign) BOOL isMainCanScroll;//主列表是否滚动
+@property (nonatomic, assign) BOOL isMainCanScroll;//主列表是否可以滚动
+@property (nonatomic, assign) BOOL isSubCanScroll;//子列表是否可以滚动
 @property (nonatomic, assign) BOOL isScrollToOriginal;//是否滚到原点
 @property (nonatomic, assign) BOOL isScrollToCeiling;//是否滚到吸顶点
 @property (nonatomic, assign) BOOL isBeginDragging;//是否开始拖拽
@@ -54,6 +53,43 @@
     return _customFooterView;
 }
 
+- (JJSegmentBar *)segmentBar
+{
+    if (!_segmentBar) {
+        _segmentBar = [[JJSegmentBar alloc] init];
+    }
+    return _segmentBar;
+}
+
+- (NSInteger)currentPage
+{
+    return (_currentPage > self.pagesArray.count - 1 || _currentPage < 0) ? 0 : _currentPage;
+}
+
+- (CGFloat)headerHeight
+{
+    return _headerHeight > 0 ? _headerHeight : 0.01;
+}
+
+- (CGFloat)footerHeight
+{
+    return _footerHeight > 0 ? _footerHeight : 0;
+}
+
+- (CGFloat)barHeight
+{
+    return _barHeight > 0 ? _barHeight : 0.0001;
+}
+
+- (CGFloat)segmentMiniTopInset
+{
+    if (_segmentMiniTopInset > 0) {
+        return _segmentMiniTopInset > self.headerHeight ? self.headerHeight : _segmentMiniTopInset;
+    } else {
+        return 0;
+    }
+}
+
 - (instancetype)init
 {
     self = [super init];
@@ -68,19 +104,9 @@
     // Do any additional setup after loading the view.
     
     self.view.backgroundColor = [UIColor whiteColor];
-    
-//    if (self.subControllers.count == 0 || self.subControllers == nil) return;
-    
     [self.pagesArray addObjectsFromArray:self.subControllers];
-    
-    self.currentPage = (self.currentPage > self.pagesArray.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
-    self.headerHeight = self.headerHeight > 0 ? self.headerHeight : 0.01;
-    self.footerHeight = self.footerHeight > 0 ? self.footerHeight : 0;
-    self.barHeight = self.barHeight > 0 ? self.barHeight : 0.0001;
-    self.segmentMiniTopInset = self.segmentMiniTopInset > 0 ? self.segmentMiniTopInset : 0;
-    self.segmentMiniTopInset = self.segmentMiniTopInset > self.headerHeight ? self.headerHeight : self.segmentMiniTopInset;
-    
-    [self setupBaseConfigs];
+
+    [self setupSubViews];
 }
 
 #pragma mark - private methods
@@ -92,21 +118,16 @@
     self.enableMainVerticalScroll = NO;
     self.enablePageHorizontalScroll = NO;
     self.isMainCanScroll = YES;
-    self.needShadow = NO;
-    self.needLine = NO;
     self.currentPage = 0;
     self.headerHeight = 0.01;
     self.footerHeight = 0;
     self.barHeight = 44;
-    self.barContentInset = UIEdgeInsetsZero;
     self.segmentMiniTopInset = 0;
-    self.barBackgroundColor = [UIColor whiteColor];
 }
 
 /// Description 初始化控件
-- (void)setupBaseConfigs
+- (void)setupSubViews
 {
-    self.automaticallyAdjustsScrollViewInsets = NO;
     if ([self.view respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
         self.view.preservesSuperviewLayoutMargins = YES;
     }
@@ -124,32 +145,35 @@
     self.customFooterView.clipsToBounds = YES;
     
     self.customFooterView.frame = CGRectMake(0, self.frame.size.height - self.footerHeight, self.view.frame.size.width, self.footerHeight);
-
 }
 
 /// Description 初始化标签按钮承载界面
 - (UIView *)setupSegmentView
 {
+    UIView *segmentBar = [self setupSegmentBar];
+    
+    segmentBar.translatesAutoresizingMaskIntoConstraints = NO;
+    
     UIView *segmentBarView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.barHeight)];
     segmentBarView.backgroundColor = [UIColor whiteColor];
-    [segmentBarView addSubview:[self setupSegmentBar]];
+    [segmentBarView addSubview:segmentBar];
     
-    UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, self.barHeight - 0.7, self.view.frame.size.width, 0.7)];
-    line.hidden = YES;
-    line.backgroundColor = self.barLineColor ? self.barLineColor : [UIColor colorWithRed:243.0 / 255.0 green:243.0 / 255.0 blue:243.0 / 255.0 alpha:1];
-    [segmentBarView addSubview:line];
+    NSLayoutConstraint *barRight = [NSLayoutConstraint constraintWithItem:segmentBar attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:segmentBarView attribute:NSLayoutAttributeRight multiplier:1.0 constant:0];
+    [segmentBarView addConstraint:barRight];
+
+    NSLayoutConstraint *barLeft = [NSLayoutConstraint constraintWithItem:segmentBar attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:segmentBarView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0];
+    [segmentBarView addConstraint:barLeft];
+
+    NSLayoutConstraint *barTop = [NSLayoutConstraint constraintWithItem:segmentBar attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:segmentBarView attribute:NSLayoutAttributeTop multiplier:1.0 constant:0];
+    [segmentBarView addConstraint:barTop];
+
+    NSLayoutConstraint *barBottom = [NSLayoutConstraint constraintWithItem:segmentBar attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:segmentBarView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:0];
+    [segmentBarView addConstraint:barBottom];
     
-    if (self.needLine && self.barHeight != 0.0001) {
-        line.hidden = NO;
-        self.barContentInset = UIEdgeInsetsMake(self.barContentInset.top, self.barContentInset.left, self.barContentInset.bottom + 0.7, self.barContentInset.right);
+    if (!self.customBarView) {
+        [self.segmentBar setupConfigureAppearance];
     }
-    
-    if (self.needShadow && self.barHeight != 0.0001) {
-        segmentBarView.layer.shadowOffset = CGSizeMake(0, 0);
-        segmentBarView.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor;
-        segmentBarView.layer.shadowOpacity = 0.5;
-    }
-    
+
     return segmentBarView;
 }
 
@@ -170,48 +194,19 @@
 - (UIView *)setupSegmentBar
 {
     if (self.customBarView) {
-        self.customBarView.frame = [self segmentBarRect];
         return self.customBarView;
     } else {
-        NSMutableArray *titles = [NSMutableArray array];
         
+        NSMutableArray *titles = [NSMutableArray array];
         for (UIViewController *controller in self.pagesArray) {
-            
             [titles addObject:controller.title == nil ? @"--" : controller.title];
         }
         
-        //创建
-        JJSegmentBar *segmentBar = [[JJSegmentBar alloc] initWithFrame:[self segmentBarRect]];
+        self.segmentBar.delegate = self;
+        self.segmentBar.titles = titles;
+        self.segmentBar.currentPage = self.currentPage;
         
-        segmentBar.delegate = self;
-        segmentBar.titles = titles;
-        segmentBar.backgroundColor = self.barBackgroundColor;
-        segmentBar.indicatorColor = self.barIndicatorColor;
-        segmentBar.normalColor = self.barNormalColor;
-        segmentBar.selectColor = self.barSelectColor;
-        segmentBar.normalFont = self.barNormalFont;
-        segmentBar.selectFont = self.barSelectFont;
-        segmentBar.currentPage = self.currentPage;
-        segmentBar.indicatorHeight = self.barIndicatorHeight;
-        segmentBar.indicatorWidth = self.barIndicatorWidth;
-        segmentBar.indicatorCornerRadius = self.barIndicatorCornerRadius;
-        segmentBar.itemPadding = self.barItemPadding;
-
-        //设置标签底部指示器宽度类型
-        segmentBar.indicatorType = self.barIndicatorType == JJBarIndicatorSameWidthType ? JJIndicatorSameWidthType : JJIndicatorAutoWidthType;
-        
-        //设置标签按钮宽度类型
-        if (self.barSegmentBtnWidthType == JJBarSegmentBtnAutoWidthType1) {
-            segmentBar.segmentBtnType = JJSegmentBtnAutoWidthType1;
-        } else if (self.barSegmentBtnWidthType == JJBarSegmentBtnAutoWidthType2) {
-            segmentBar.segmentBtnType = JJSegmentBtnAutoWidthType2;
-        }
-        
-        [segmentBar setupConfigureAppearance];
-        
-        self.segmentBar = segmentBar;
-        
-        return segmentBar;
+        return self.segmentBar;
     }
 }
 
@@ -279,11 +274,11 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UITableViewHeaderFooterView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"sectionHeader"];
+    UITableViewHeaderFooterView *headerView = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"UITableViewHeaderView"];
     
     if (headerView == nil) {
         
-        headerView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"sectionHeader"];
+        headerView = [[UITableViewHeaderFooterView alloc] initWithReuseIdentifier:@"UITableViewHeaderView"];
         
         [headerView addSubview:[self setupSegmentView]];
     
@@ -368,6 +363,7 @@
 
         scrollView.contentOffset = CGPointMake(0, ceilingPoint);
         self.isMainCanScroll = NO;//主列表固定位置，不可以滚动
+        self.isSubCanScroll = YES;//子列表可以滚动
         
     //主列表下滑到偏移量<0时
     } else if (offsetY < 0) {
@@ -387,12 +383,12 @@
         
         //处理子列表没有偏移量回调的情况
         if (self.isSubVerticalScroll == NO && self.currentPageScrollView.contentOffset.y <= 0 && self.enableSegmentBarCeilingScroll == YES) {
-            self.isMainCanScroll = YES;
-        }
-        
+           
         // 主列表不可以滚动时，固定位置
-        if (self.isMainCanScroll == NO && self.isSubVerticalScroll == YES) {
+        } else if (self.isMainCanScroll == NO && self.isSubVerticalScroll == YES) {
             scrollView.contentOffset = CGPointMake(0, ceilingPoint);
+        } else if (self.currentPageScrollView.contentOffset.y <= 0 && self.isSubCanScroll == YES  && self.isSubVerticalScroll == YES) {
+            scrollView.contentOffset = CGPointZero;
         }
     }
 }
@@ -419,15 +415,21 @@
         //当子列表下滑到偏移量<0时，并且enableSegmentBarCeilingScroll为允许时，让主列表跟随滑动，此时主列表可以滑动
         if (offsetY <= 0 && self.enableSegmentBarCeilingScroll == YES) {
             self.isMainCanScroll = YES;//主列表跟随滚动，可以滚动
+            self.isSubCanScroll = NO;//子列表不可以滚动
         }
         
     //主列表可以滚动时
     } else {
 
-        if ((self.enableMainRefreshScroll == NO) && self.mainTableView.contentOffset.y <= 0) {
-
+        if (self.enableMainRefreshScroll == NO && self.mainTableView.contentOffset.y <= 0) {
+            self.isSubCanScroll = YES;
         } else {
             scrollView.contentOffset = CGPointZero;
+            self.isSubCanScroll = NO;
+        }
+        
+        if (self.isSubCanScroll == YES && offsetY == 0) {
+            self.isSubCanScroll = NO;
         }
     }
 }
@@ -436,9 +438,10 @@
 {
     self.currentPage = index;
     self.isSubVerticalScroll = NO;
+    self.isSubCanScroll = NO;
     
     if (!self.customBarView) {
-        [self.segmentBar switchBtnWithCurrentPage:index];
+        [self.segmentBar switchItemWithIndex:index];
     }
     
     if ([self.delegate respondsToSelector:@selector(jj_segment_scrollViewDidEndDecelerating:)]) {
@@ -467,6 +470,7 @@
 {
     self.currentPage = index;
     self.isSubVerticalScroll = NO;
+    self.isSubCanScroll = NO;
     
     self.currentPageScrollView = [self.pageView switchPageViewWithIndex:index];
     
@@ -477,17 +481,6 @@
     if (self.jj_segment_didSelectedBlock) {
         self.jj_segment_didSelectedBlock(index);
     }
-}
-
-/// Description 重新计算SegmentBar的尺寸
-- (CGRect)segmentBarRect
-{
-    CGFloat top = self.barContentInset.top;
-    CGFloat left = self.barContentInset.left;
-    CGFloat bottom = self.barContentInset.bottom;
-    CGFloat right = self.barContentInset.right;
-    
-    return CGRectMake(0 + left, 0 + top, self.view.frame.size.width - left - right, self.barHeight - top - bottom);
 }
 
 #pragma mark - public methods
@@ -541,11 +534,12 @@
 {
     self.currentPage = index;
     self.isSubVerticalScroll = NO;
+    self.isSubCanScroll = NO;
     
     self.currentPageScrollView = [self.pageView switchPageViewWithIndex:index];
     
     if (!self.customBarView) {
-        [self.segmentBar switchBtnWithCurrentPage:index];
+        [self.segmentBar switchItemWithIndex:index];
     }
 }
 
@@ -553,6 +547,7 @@
 - (void)scrollToOriginalPoint
 {
     self.isMainCanScroll = YES;
+    self.isSubCanScroll = NO;//子列表不可以滚动
     self.isScrollToOriginal = YES;
     
     [self.mainTableView setContentOffset:CGPointZero animated:YES];
@@ -568,6 +563,7 @@
 - (void)scrollToCeilingPoint
 {
     self.isMainCanScroll = NO;
+    self.isSubCanScroll = YES;//子列表可以滚动
     self.isScrollToCeiling = YES;
     
     CGFloat criticalPoint = [self.mainTableView rectForSection:0].origin.y - self.segmentMiniTopInset;

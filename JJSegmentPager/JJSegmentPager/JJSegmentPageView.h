@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<JJSegmentPageViewDelegate> delegate;
 @property (nonatomic, strong) JJSegmentScrollView *scrollView;//继承自定义ScrollView 防止控制器侧滑返回与ScrollView左右滑动产生冲突
+@property (nonatomic, strong) UIScrollView *currentPageScrollView;
 @property (nonatomic, strong) NSMutableArray *subScrollViews;
 
 - (void)setPagesArray:(NSMutableArray *)pagesArray currentPage:(NSInteger)currentPage;
@@ -35,4 +36,3 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
-

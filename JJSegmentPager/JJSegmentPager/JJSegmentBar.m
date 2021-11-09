@@ -8,22 +8,18 @@
 
 #import "JJSegmentBar.h"
 
-#define JJ_SegmentBar_ScrollviewH 44.0
 #define JJ_SegmentBar_BottomH 3.0
-#define JJ_SegmentBar_Edge 5
-#define JJ_SegmentBar_BtnCount 5
 #define JJ_SegmentBar_Padding 24
 
 @interface JJSegmentBar() <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UIView *indicatorView;
+@property (nonatomic, strong) UIView *lineView;
 
 @property (nonatomic, assign) CGFloat viewWidth;
-@property (nonatomic, assign) CGFloat viewHeight;
 @property (nonatomic, assign) CGFloat itemHeight;
 @property (nonatomic, assign) CGFloat contentWidth;
-
-@property (nonatomic, strong) UIView *indicatorView;
 
 @end
 
@@ -31,10 +27,42 @@
 
 - (UIColor *)indicatorColor
 {
-    if (!_indicatorColor) {
-        _indicatorColor = self.selectColor ? self.selectColor : [UIColor blueColor];
-    }
-    return _indicatorColor;
+    return _indicatorColor ? _indicatorColor : self.selectColor;
+}
+
+- (UIColor *)lineColor
+{
+    return _lineColor ? _lineColor : [UIColor colorWithRed:243.0 / 255.0 green:243.0 / 255.0 blue:243.0 / 255.0 alpha:1];
+}
+
+- (UIColor *)normalColor
+{
+    return _normalColor ? _normalColor : [UIColor blackColor];
+}
+
+- (UIColor *)selectColor
+{
+    return _selectColor ? _selectColor : [UIColor blueColor];
+}
+
+- (UIFont *)normalFont
+{
+    return _normalFont ? _normalFont : [UIFont systemFontOfSize:16];
+}
+
+- (UIFont *)selectFont
+{
+    return _selectFont ? _selectFont : [UIFont boldSystemFontOfSize:17];
+}
+
+- (CGFloat)itemPadding
+{
+    return _itemPadding <= 0 ? JJ_SegmentBar_Padding : _itemPadding;
+}
+
+- (NSInteger)currentPage
+{
+    return (_currentPage > self.titles.count - 1 || _currentPage < 0) ? 0 : _currentPage;;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -42,28 +70,25 @@
     self = [super initWithFrame:frame];
     if (self) {
         
-        self.frame = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, self.frame.size.height);
-        self.clipsToBounds = YES;
-        self.layer.masksToBounds = YES;
         self.backgroundColor = [UIColor whiteColor];
-        
-        self.viewWidth = self.frame.size.width;
-        self.viewHeight = self.frame.size.height;
-        self.itemHeight = self.frame.size.height;
-        self.itemPadding = JJ_SegmentBar_Padding;
-        
-        self.selectColor = [UIColor blueColor];
-        self.normalColor = [UIColor blackColor];
-        self.selectFont = [UIFont boldSystemFontOfSize:17];
-        self.normalFont = [UIFont systemFontOfSize:16];
-        
+
         [self setupCollectionView];
         [self setupIndicatorView];
+        [self setupLineView];
     }
     return self;
 }
 
 #pragma mark - private methods
+
+- (void)setupLineView
+{
+    UIView *lineView = [[UIView alloc] init];
+    lineView.hidden = YES;
+    [self addSubview:lineView];
+    
+    self.lineView = lineView;
+}
 
 - (void)setupIndicatorView
 {
@@ -80,7 +105,7 @@
     layout.minimumLineSpacing = 0;
     layout.minimumInteritemSpacing = 0;
     
-    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.viewWidth, self.itemHeight) collectionViewLayout:layout];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height) collectionViewLayout:layout];
     
     collectionView.backgroundColor = [UIColor whiteColor];
     
@@ -95,6 +120,8 @@
     [self addSubview:collectionView];
     
     self.collectionView = collectionView;
+    
+    collectionView.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -131,7 +158,7 @@
     if (self.titles.count == 0) return CGSizeMake(0, self.itemHeight);
     
     //当所有按钮宽度总和小于屏幕宽度时，按钮还是等宽
-    if (self.segmentBtnType == JJSegmentBtnAutoWidthType1 && self.contentWidth <= self.viewWidth && self.contentWidth != 0) {
+    if (self.itemType == JJSegmentItemAutoWidthType1 && self.contentWidth <= self.viewWidth) {
 
         return CGSizeMake(self.viewWidth / self.titles.count, self.itemHeight);
 
@@ -146,7 +173,7 @@
     }
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:( UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:( NSInteger )section
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger )section
 {
     return UIEdgeInsetsMake(0, 0, 0, 0);
 }
@@ -173,80 +200,79 @@
 
     //当前item的位置
     UICollectionViewLayoutAttributes *pose = [self.collectionView.collectionViewLayout layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForRow:self.currentPage inSection:0]];
-    
-//    NSLog(@"%@", NSStringFromCGRect(pose.frame));
 
-//    // scroll view 当前偏移量
-//    CGFloat scrollOffsetX = self.collectionView.contentOffset.x;
-//    // 屏幕中显示的位置
-//    CGFloat screenX = self.frame.size.width / 2;
-//    // 在当前屏幕中偏移量
-//    CGFloat selectOffsetX = cell.frame.origin.x - self.collectionView.contentOffset.x;
-//
-//    if (selectOffsetX < screenX) {
-//        scrollOffsetX -= screenX - selectOffsetX;
-//    }else{
-//        scrollOffsetX += selectOffsetX - screenX;
-//    }
-//
-//    if (scrollOffsetX < 0) {
-//        scrollOffsetX = 0;
-//    }
-//
-//    if (self.collectionView.contentSize.width - self.collectionView.frame.size.width < 0) {
-//        scrollOffsetX = 0;
-//    } else if (scrollOffsetX > self.collectionView.contentSize.width - self.collectionView.frame.size.width) {
-//        scrollOffsetX = self.collectionView.contentSize.width - self.collectionView.frame.size.width;
-//    } else {
-////        scrollOffsetX = 0;
-//    }
-//
-//    [self.collectionView setContentOffset:CGPointMake(scrollOffsetX, 0) animated:YES];
     [self.collectionView reloadData];
 
     NSString *content = self.titles[self.currentPage];
     
     CGRect bounds = [content boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:self.selectFont} context:nil];
     
-    CGFloat currentWidth = pose.frame.size.width - JJ_SegmentBar_Edge * 2;
+    CGFloat currentWidth = pose.frame.size.width - self.itemPadding;
     
     //如果设置的高度小于0，或者大于按钮高度的1/3，显示默认高度
-    self.indicatorHeight = (self.indicatorHeight <= 0 || self.indicatorHeight > self.viewHeight / 3.0) ? JJ_SegmentBar_BottomH : self.indicatorHeight;
+    self.indicatorHeight = (self.indicatorHeight <= 0 || self.indicatorHeight > self.itemHeight / 3.0) ? JJ_SegmentBar_BottomH : self.indicatorHeight;
     //如果设置的宽度小于0，或者大于按钮宽度，显示默认宽度
     self.indicatorWidth = (self.indicatorWidth <= 0 || self.indicatorWidth > currentWidth) ? currentWidth : self.indicatorWidth;
     
-    CGFloat titleWidth = bounds.size.width > currentWidth ? currentWidth: bounds.size.width;
+    CGFloat titleWidth = bounds.size.width > currentWidth ? currentWidth : bounds.size.width;
     CGFloat indicatorWidth = self.indicatorType == JJIndicatorSameWidthType ? self.indicatorWidth : titleWidth;
     
     [UIView animateWithDuration:duration animations:^{
         
         self.indicatorView.frame = CGRectMake(0, 0, indicatorWidth, self.indicatorHeight);
-        self.indicatorView.center = CGPointMake(pose.frame.origin.x + pose.frame.size.width / 2 , self.viewHeight - self.indicatorHeight / 2);
+        self.indicatorView.center = CGPointMake(pose.frame.origin.x + pose.frame.size.width / 2 , self.itemHeight - self.indicatorHeight / 2);
     }];
 }
 
 /// Description 初始化各项参数配置
 - (void)setupConfigureAppearance
 {
-    if (self.titles.count == 0 || self.titles == nil) {
+    if (!self.titles.count) {
         self.hidden = YES;
         return;
     }
     
     self.hidden = NO;
     
-    self.currentPage = (self.currentPage > self.titles.count - 1 || self.currentPage < 0) ? 0 : self.currentPage;
+    [self.superview layoutIfNeeded];
+    
+    if (self.needLine && self.frame.size.height > 0.5) {
+        self.lineView.hidden = NO;
+        self.contentInset = UIEdgeInsetsMake(self.contentInset.top, self.contentInset.left, self.contentInset.bottom + 0.7, self.contentInset.right);
+    }
+    
+    if (self.needShadow && self.frame.size.height > 0.5) {
+        self.layer.shadowOffset = CGSizeMake(0, 0);
+        self.layer.shadowColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.2].CGColor;
+        self.layer.shadowOpacity = 0.5;
+    }
+    
+    self.lineView.frame = CGRectMake(0, self.frame.size.height - 0.7, self.frame.size.width, 0.7);
+    self.collectionView.frame = CGRectMake(self.contentInset.left, self.contentInset.top, self.frame.size.width - self.contentInset.left - self.contentInset.right, self.frame.size.height - self.contentInset.top - self.contentInset.bottom);
 
-    //用于获取collectionViewContentSize
-    self.contentWidth = 0;
-    [self.collectionView reloadData];
-
-    //根据类型进行布局
-    self.contentWidth = self.collectionView.collectionViewLayout.collectionViewContentSize.width;
+    self.viewWidth = self.frame.size.width - self.contentInset.left - self.contentInset.right;
+    self.itemHeight = self.frame.size.height - self.contentInset.top - self.contentInset.bottom;
+    
+    NSLog(@"-----%f", self.frame.size.height);
+    
+    //计算内容总宽度
+    CGFloat contentWidth = 0;
+    for (NSInteger i = 0; i < self.titles.count; i++) {
+        NSString *content = self.titles[i];
+        
+        UIFont *font = self.currentPage == i ? self.selectFont : self.normalFont;
+        
+        CGRect bounds = [content boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:font} context:nil];
+        
+        contentWidth = contentWidth + bounds.size.width + self.itemPadding;
+    }
+    
+    self.contentWidth = contentWidth;
     [self.collectionView reloadData];
     
     self.indicatorView.backgroundColor = self.indicatorColor;
     self.indicatorView.layer.cornerRadius = self.indicatorCornerRadius;
+    self.lineView.backgroundColor = self.lineColor;
     
     //切换当前点击按钮
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -254,35 +280,15 @@
     });
 }
 
-/// Description 切换当前点击按钮位置
-/// @param currentPage 当前按钮位置
-- (void)switchBtnWithCurrentPage:(NSInteger)currentPage
+/// Description 切换当前点击位置
+/// @param index 当前位置
+- (void)switchItemWithIndex:(NSInteger)index
 {
-    self.currentPage = (currentPage > self.titles.count - 1 || currentPage < 0) ? 0 : currentPage;
+    self.currentPage = index;
     
     if (self.titles.count == 0 || self.titles.count - 1 < self.currentPage) return;
     
     [self selectItemDuration:0.2];
-}
-
-- (void)setNormalFont:(UIFont *)normalFont
-{
-    _normalFont = normalFont ? normalFont : [UIFont systemFontOfSize:16];
-}
-
-- (void)setSelectFont:(UIFont *)selectFont
-{
-    _selectFont = selectFont ? selectFont : [UIFont boldSystemFontOfSize:17];
-}
-
-- (void)setNormalColor:(UIColor *)normalColor
-{
-    _normalColor = normalColor ? normalColor : [UIColor blackColor];
-}
-
-- (void)setSelectColor:(UIColor *)selectColor
-{
-    _selectColor = selectColor ? selectColor : [UIColor blueColor];
 }
 
 @end
